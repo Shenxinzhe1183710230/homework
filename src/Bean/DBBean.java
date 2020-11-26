@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class DBBean {
     private String driverStr = "com.mysql.jdbc.Driver";
-    private String connStr = "jdbc:mysql://localhost:3306/homework_login?serverTimezone=UTC";
+    private String connStr = "jdbc:mysql://localhost:3306/homework?serverTimezone=UTC";
     private String dbusername = "root";
     private String dbpassword = "zhege00..";
     private Connection conn = null;
@@ -101,10 +101,11 @@ public class DBBean {
      * dbBean.execQuery("nameandpassword(user_name,user_password,age)","'yzj','654321',10");
      */
     public void executeQuery(String table_name, String value){
-        String sql="insert into homework_login."+table_name +"values"+"("+value+")";//定义一个插入语句
+        String sql="insert ignore into homework."+table_name +"values"+"("+value+")";//定义一个插入语句
         System.out.println(sql);
         try {
-            stmt.executeUpdate(sql);
+            int x=stmt.executeUpdate(sql);
+            System.out.println(x);
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             System.out.println(e);
