@@ -2,25 +2,18 @@ package GUI;
 
 import Bean.DBBean;
 
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.BorderLayout;
-import javax.swing.JLabel;
-import javax.swing.Box;
-import javax.swing.JComboBox;
 import java.awt.Component;
 import java.awt.GridBagLayout;
 import java.awt.GridBagConstraints;
 import java.awt.Insets;
-import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import javax.swing.SwingConstants;
-import javax.swing.JButton;
 
 public class windowsToCreateOrders extends JFrame{
 	private JTextField goodsPriceDisplay;
@@ -58,7 +51,9 @@ public class windowsToCreateOrders extends JFrame{
 						goodsPriceDisplay.setText(String.valueOf(res.getObject("outprice")));
 					}
 					else {
-
+						JTextArea aboutarea = new JTextArea();
+						aboutarea.setText("未查找到！\n");
+						JOptionPane.showConfirmDialog(null,aboutarea,"Error!",JOptionPane.PLAIN_MESSAGE);
 					}
 				} catch (SQLException throwables) {
 					throwables.printStackTrace();
