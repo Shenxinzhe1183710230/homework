@@ -187,7 +187,7 @@ public class mainGUI extends JFrame {
         scrollPane_2.setViewportView(table_2);
         btnNewButton_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                windowsToCreateOrders window_1 = new windowsToCreateOrders();
+                windowsToCreateOrders window_1 = new windowsToCreateOrders(db);
                 window_1.setVisible(true);
                 window_1.setSize(400, 400);
             }
