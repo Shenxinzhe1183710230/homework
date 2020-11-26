@@ -95,6 +95,25 @@ public class DBBean {
     }
 
     /**
+     *
+     * @param table_name 数据库的表名  eg:itemmanager
+     * @return 返回所有表头字段。ResultSet
+     */
+    public ResultSet executeTablehead(String table_name){
+        ResultSet resultSet=null;
+        String sql="SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA " +
+                "= 'homework' AND TABLE_NAME = '"+table_name+"'";
+        System.out.println(sql);
+        try {
+            resultSet=stmt.executeQuery(sql);
+        } catch (SQLException e) {
+            System.out.println(e);
+            System.out.println("查询表头错误！");
+        }
+        return resultSet;
+    }
+
+    /**
      *向数据库中插入一个数据
      * @param table_name    数据库的表名及参数名   eg:table(id,name,age)
      * @param value         要传入的值   字符串需要打单引号          eg:1,'sxz',20

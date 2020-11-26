@@ -1,5 +1,6 @@
 package Bean;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class main {
@@ -11,24 +12,24 @@ public class main {
 //        dbBean.executeQuery("customermanager(Name,PhoneNum)","'yzj','444444'");
 //        dbBean.executeQuery("customermanager(Name,PhoneNum)","'dzh','555555'");
 //        dbBean.executeQuery("customermanager(Name,PhoneNum)","'yzj','444444'");
-        dbBean.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)","'car',100000,1,50000");
-        dbBean.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)","'banana',15.1,10,5.5");
-        dbBean.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)","'apple',3.2,50,1.2");
-        dbBean.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)","'bowl',8.8,15,4.4");
+//        dbBean.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)","'car',100000,1,50000");
+//        dbBean.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)","'banana',15.1,10,5.5");
+//        dbBean.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)","'apple',3.2,50,1.2");
+//        dbBean.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)","'bowl',8.8,15,4.4");
         //dbBean.executeDelete("wkr","customermanager","Name");
         //dbBean.executeUpdate("'wkr'","nameandpassword",
          //       "user_name","654321","user_password");
         //dbBean.executeDelete("yzj","nameandpassword","user_name");
         //dbBean.executeQuery("nameandpassword(user_name,user_password,age)","'yzj','654321',10");
         //ResultSet resultSet=dbBean.executeQuery("wkr","nameandpassword","user_name");
-        /*String password="1234567";
+//        String password="1234567";
+        ResultSet resultSet=null;
+//        resultSet=dbBean.executeFind("bowl","itemmanger","name");
+        resultSet=dbBean.executeTablehead("itemmanager");
         while (resultSet.next())
         {
-            if(password.equals(resultSet.getObject("user_password"))){
-                System.out.println(111111);
-            }else {
-                System.out.println(22222222);
-            }
-        }*/
+            System.out.println(resultSet.getString(1));
+
+        }
     }
 }
