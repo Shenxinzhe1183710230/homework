@@ -55,7 +55,12 @@ public class windowsToCreateCustomer extends JFrame{
 					JOptionPane.showConfirmDialog(null,aboutarea,"Error!",JOptionPane.PLAIN_MESSAGE);
 				}
 				else {
-					db.executeQuery("customermanager(Name,PhoneNum)", "\'" + textField.getText() + "\',\'" + textField_1.getText() + "\'");
+					int x=db.executeQuery("customermanager(Name,PhoneNum)", "\'" + textField.getText() + "\',\'" + textField_1.getText() + "\'");
+					if (x==0){
+						JTextArea aboutarea = new JTextArea();
+						aboutarea.setText("已经增加过此用户！\n");
+						JOptionPane.showConfirmDialog(null,aboutarea,"Error!",JOptionPane.PLAIN_MESSAGE);
+					}
 					Vector<Object> name_1 = null;
 					try {
 						name_1 = returnVector.getHeadName(db, "customermanager");

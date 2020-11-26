@@ -139,17 +139,19 @@ public class DBBean {
      * @param value         要传入的值   字符串需要打单引号          eg:1,'sxz',20
      * dbBean.execQuery("nameandpassword(user_name,user_password,age)","'yzj','654321',10");
      */
-    public void executeQuery(String table_name, String value){
+    public int executeQuery(String table_name, String value){
         String sql="insert ignore into homework."+table_name +"values"+"("+value+")";//定义一个插入语句
+        int x=0;
         System.out.println(sql);
         try {
-            int x=stmt.executeUpdate(sql);
+            x=stmt.executeUpdate(sql);
             System.out.println(x);
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             System.out.println(e);
             System.out.println("执行插入错误！");
         }
+        return x;
     }
 
     public void close() {
