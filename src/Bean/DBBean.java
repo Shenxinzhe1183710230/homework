@@ -47,13 +47,25 @@ public class DBBean {
         return rs;
     }
 
-    //更新数据库中的数据
-    public int executeUpdate(String s) {
+    /**
+     * 更新数据库中的数据（如果值为字符串类型，需要加单引号‘’）
+     * @param index_value   查询那一列的值
+     * @param tableName     想要更新的表名
+     * @param index         查询哪一列
+     * @param target_value  想要更改后的值。如果值为字符串类型，需要加单引号‘’
+     * @param target_index  想要修改表单的哪一列值
+     * @return
+     * dbBean.executeUpdate(" ' wkr ' ", " nameandpassword ",
+     *                 "user_name","654321","user_password");
+     */
+    public int executeUpdate(String index_value,String tableName,String index,String target_value,String target_index) {
         int result = 0;
-        System.out.println("--更新语句:"+s+"\n");
+        String sql="update "+tableName+" set "+target_index+"="+target_value+" where "+index+"="+index_value;
+        System.out.println("--更新语句:"+sql+"\n");
         try {
-            result = stmt.executeUpdate(s);
+            result = stmt.executeUpdate(sql);
         } catch (Exception ex) {
+            System.out.println(ex);
             System.out.println("执行更新错误！");
         }
         return result;
