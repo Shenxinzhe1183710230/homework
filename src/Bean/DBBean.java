@@ -80,7 +80,7 @@ public class DBBean {
      * @return   返回查询到的所有行
      *  eg:   dbBean.executeQuery("wkr","nameandpassword","user_name");
      */
-    public ResultSet executeQuery(String value,String tableName,String index) {
+    public ResultSet executeFind(String value, String tableName, String index) {
         ResultSet rs = null;
         String sql="select * from "+tableName+" where "+index+"="+"'"+value+"'";//定义一个查询语句
         System.out.print("--查询语句:"+sql+"\n");
@@ -100,7 +100,7 @@ public class DBBean {
      * @param value         要传入的值   字符串需要打单引号          eg:1,'sxz',20
      * dbBean.execQuery("nameandpassword(user_name,user_password,age)","'yzj','654321',10");
      */
-    public void executeQuery(String table_name,String value){
+    public void executeQuery(String table_name, String value){
         String sql="insert into homework_login."+table_name +"values"+"("+value+")";//定义一个插入语句
         System.out.println(sql);
         try {
