@@ -1,6 +1,7 @@
 package GUI;
 
 import Bean.DBBean;
+import op.op;
 
 import javax.swing.*;
 import java.awt.BorderLayout;
@@ -24,7 +25,7 @@ public class windowsToCreateOrders extends JFrame{
 	private JTextField textField;
 	private JTextField textField_1;
 	private windowsToCreateOrders a = this;
-	public windowsToCreateOrders(DBBean db, JTable table, Vector<Vector<Object>> data, Vector<Object> name) {
+	public windowsToCreateOrders(DBBean db, JTable table, Vector<Vector<Object>> data, Vector<Object> name, JTextField out) {
 		setTitle("新增商品");
 		getContentPane().setLayout(new BorderLayout(0, 0));
 
@@ -127,6 +128,7 @@ public class windowsToCreateOrders extends JFrame{
 				data.add(temp);
 				table.setModel(new DefaultTableModel(data, name));
 				a.setVisible(false);
+				out.setText(String.valueOf(op.caculateAllPrice(data)));
 			}
 		});
 		panel_addGoods.add(btnSave);

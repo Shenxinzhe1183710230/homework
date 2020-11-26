@@ -1,7 +1,7 @@
 package GUI;
 
 import Bean.DBBean;
-import op.returnVector;
+import op.*;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -34,6 +34,8 @@ public class mainGUI extends JFrame {
     private JTable table_10;
     private JTable table_IncomingGoodsList;
     private JTextField totalPriceDisplay;
+    private JTextField textField_3;
+    private JTextField textField_4;
     private DBBean db=new DBBean();
 
     /**
@@ -190,7 +192,7 @@ public class mainGUI extends JFrame {
         JButton btnNewButton_2 = new JButton("\u65B0\u589E");
         btnNewButton_2.setFont(new Font("����", Font.PLAIN, 16));
         panel_10.add(btnNewButton_2, BorderLayout.NORTH);
-        // 保存按钮
+        // 销售保存按钮
         JButton btnNewButton_3 = new JButton("\u4FDD\u5B58");
         btnNewButton_3.setFont(new Font("����", Font.PLAIN, 16));
         panel_10.add(btnNewButton_3, BorderLayout.EAST);
@@ -216,17 +218,35 @@ public class mainGUI extends JFrame {
 
         // 显示添加的物品
         Vector<Object> name_2 = new Vector<Object>();
-        name_2.add("name"); name_2.add("num"); name_2.add("price/one"); name_2.add("price/all");
+        name_2.add("name"); name_2.add("price/one"); name_2.add("num"); name_2.add("price/all");
         Vector<Vector<Object>> data_2 = new Vector<>();
         DefaultTableModel tableModel_2 = new DefaultTableModel(data_2, name_2);
         table_2 = new JTable();
         table_2.setModel(tableModel_2);
         scrollPane_2.setViewportView(table_2);
 
+        // 销售保存按钮 监听
+        btnNewButton_3.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nameANDnum = "'";
+                String priceAll = textField_1.getText();
+                for (Vector<Object> x : data_2){
+                    nameANDnum = nameANDnum + "<" + x.get(0) +","+ x.get(2) + ">";
+                }
+                nameANDnum = nameANDnum + "'";
+                db.executeQuery( "ordermanager(Name, State, Items, price_all)",
+                        "'" + textField.getText()+"',1,"+nameANDnum+","+priceAll);
+                data_2.clear();
+                table_2.setModel(new DefaultTableModel(data_2, name_2));
+                textField_1.setText("");
+            }
+        });
+
         // 新增按钮的button绑定
         btnNewButton_2.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                windowsToCreateOrders window_1 = new windowsToCreateOrders(db, table_2, data_2, name_2);
+                windowsToCreateOrders window_1 = new windowsToCreateOrders(db, table_2, data_2, name_2, textField_1);
                 window_1.setVisible(true);
                 window_1.setSize(400, 400);
             }
@@ -253,14 +273,19 @@ public class mainGUI extends JFrame {
         tablemodel_3.addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
-                System.out.println(e.getFirstRow()+"''''''''");
                 if(e.getColumn()==order_name2.size()-1){
-                    System.out.println(data_3.get(e.getFirstRow()));
-                    db.executeUpdate((String)(data_3.get(e.getFirstRow()).get(0))
-                            ,"ordermanager","ID","2","State");
+                    if((Boolean) data_3.get(e.getFirstRow()).get(order_name2.size()-1))
+                        db.executeUpdate((String)(data_3.get(e.getFirstRow()).get(0))
+                                ,"ordermanager","ID","2","State");
+                    else
+                        db.executeUpdate((String)(data_3.get(e.getFirstRow()).get(0))
+                                ,"ordermanager","ID","1","State");
                 }
             }
         });
+        JButton btnNewButton = new JButton("确认");
+        panel_5.add(btnNewButton, BorderLayout.SOUTH);
+
 
 
         //待收款
@@ -281,12 +306,44 @@ public class mainGUI extends JFrame {
             @Override
             public void tableChanged(TableModelEvent e) {
                 if(e.getColumn()==order_name2.size()-1){
-                    System.out.println(data_4.get(e.getFirstRow()));
-                    db.executeUpdate((String)(data_4.get(e.getFirstRow()).get(0))
-                            ,"ordermanager","ID","3","State");
+                    if((Boolean) data_4.get(e.getFirstRow()).get(order_name2.size()-1))
+                        db.executeUpdate((String)(data_4.get(e.getFirstRow()).get(0))
+                                ,"ordermanager","ID","3","State");
+                    else
+                        db.executeUpdate((String)(data_4.get(e.getFirstRow()).get(0))
+                                ,"ordermanager","ID","2","State");
                 }
+
             }
         });
+        JButton btnNewButton_4 = new JButton("确认");
+        btnNewButton_4.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Vector<Vector<Object>> data_tmp = returnVector.FromDBRead(db, "ordermanager", order_name, "2", "State");
+                DefaultTableModel tablemodel_tmp = new DefaultTableModel(data_tmp, order_name2);
+                table_4.setModel(tablemodel_tmp);
+                TableColumn tcm2 = table_4.getColumnModel().getColumn(order_name2.size()-1);
+                tcm2.setCellEditor(table_4.getDefaultEditor(Boolean.class));
+                tcm2.setCellRenderer(table_4.getDefaultRenderer(Boolean.class));
+                tablemodel_tmp.addTableModelListener(new TableModelListener() {
+                    @Override
+                    // 监听器可写成函数
+                    public void tableChanged(TableModelEvent e) {
+                        if(e.getColumn()==order_name2.size()-1){
+                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
+                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
+                                        ,"ordermanager","ID","3","State");
+                            else
+                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
+                                        ,"ordermanager","ID","2","State");
+                        }
+
+                    }
+                });
+            }
+        });
+        panel_7.add(btnNewButton_4, BorderLayout.SOUTH);
 
 
         //待退货
@@ -307,12 +364,42 @@ public class mainGUI extends JFrame {
             @Override
             public void tableChanged(TableModelEvent e) {
                 if(e.getColumn()==order_name2.size()-1){
-                    System.out.println(data_5.get(e.getFirstRow()));
-                    db.executeUpdate((String)(data_5.get(e.getFirstRow()).get(0))
-                            ,"ordermanager","ID","4","State");
+                    if((Boolean) data_5.get(e.getFirstRow()).get(order_name2.size()-1))
+                        db.executeUpdate((String)(data_5.get(e.getFirstRow()).get(0))
+                                ,"ordermanager","ID","4","State");
+                    else
+                        db.executeUpdate((String)(data_5.get(e.getFirstRow()).get(0))
+                                ,"ordermanager","ID","3","State");
                 }
             }
         });
+        JButton btnNewButton_5 = new JButton("确认");
+        btnNewButton_5.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Vector<Vector<Object>> data_tmp = returnVector.FromDBRead(db, "ordermanager", order_name, "3", "State");
+                DefaultTableModel tablemodel_tmp = new DefaultTableModel(data_tmp, order_name2);
+                table_5.setModel(tablemodel_tmp);
+                TableColumn tcm2 = table_5.getColumnModel().getColumn(order_name2.size()-1);
+                tcm2.setCellEditor(table_5.getDefaultEditor(Boolean.class));
+                tcm2.setCellRenderer(table_5.getDefaultRenderer(Boolean.class));
+                tablemodel_tmp.addTableModelListener(new TableModelListener() {
+                    @Override
+                    public void tableChanged(TableModelEvent e) {
+                        if(e.getColumn()==order_name2.size()-1){
+                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
+                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
+                                        ,"ordermanager","ID","4","State");
+                            else
+                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
+                                        ,"ordermanager","ID","3","State");
+                        }
+
+                    }
+                });
+            }
+        });
+        panel_8.add(btnNewButton_5, BorderLayout.SOUTH);
 
         //已完成
         JPanel panel_12 = new JPanel();
@@ -332,9 +419,12 @@ public class mainGUI extends JFrame {
             @Override
             public void tableChanged(TableModelEvent e) {
                 if(e.getColumn()==order_name2.size()-1){
-                    System.out.println(data_6.get(e.getFirstRow()));
-                    db.executeUpdate((String)(data_6.get(e.getFirstRow()).get(0))
-                            ,"ordermanager","ID","4","State");
+                    if((Boolean) data_6.get(e.getFirstRow()).get(order_name2.size()-1))
+                        db.executeUpdate((String)(data_6.get(e.getFirstRow()).get(0))
+                                ,"ordermanager","ID","4","State");
+                    else
+                        db.executeUpdate((String)(data_6.get(e.getFirstRow()).get(0))
+                                ,"ordermanager","ID","3","State");
                 }
             }
         });
@@ -350,15 +440,41 @@ public class mainGUI extends JFrame {
         table_8 = new JTable();
         table_8.setModel(tablemodel_8);
         scrollPane_8.setViewportView(table_8);
+        Box horizontalBox_2 = Box.createHorizontalBox();
+        panel_4.add(horizontalBox_2, BorderLayout.NORTH);
 
-        //查看销售单
-        JPanel panel_9 = new JPanel();
-        tabbedPane_1.addTab("\u67E5\u770B\u9500\u552E\u5355", null, panel_9, null);
-        panel_9.setLayout(new BorderLayout(0, 0));
-        JScrollPane scrollPane_7 = new JScrollPane();
-        panel_9.add(scrollPane_7, BorderLayout.CENTER);
-        table_6 = new JTable();
-        scrollPane_7.setViewportView(table_6);
+        JLabel lblNewLabel_5 = new JLabel("订单号：");
+        horizontalBox_2.add(lblNewLabel_5);
+
+        textField_3 = new JTextField();
+        horizontalBox_2.add(textField_3);
+        textField_3.setColumns(10);
+
+        JButton btnNewButton_7 = new JButton("查 询");
+        horizontalBox_2.add(btnNewButton_7);
+
+        Component horizontalStrut_2 = Box.createHorizontalStrut(400);
+        horizontalBox_2.add(horizontalStrut_2);
+
+        Box horizontalBox_3 = Box.createHorizontalBox();
+        panel_4.add(horizontalBox_3, BorderLayout.SOUTH);
+
+        JLabel lblNewLabel_6 = new JLabel("总利润：");
+        horizontalBox_3.add(lblNewLabel_6);
+
+        textField_4 = new JTextField();
+        textField_4.setHorizontalAlignment(SwingConstants.RIGHT);
+        textField_4.setEditable(false);
+        textField_4.setEnabled(false);
+        horizontalBox_3.add(textField_4);
+        textField_4.setColumns(1);
+
+        JLabel lblNewLabel_7 = new JLabel("元");
+        horizontalBox_3.add(lblNewLabel_7);
+
+        Component horizontalStrut = Box.createHorizontalStrut(600);
+        horizontalBox_3.add(horizontalStrut);
+
 
 
         // 库存
@@ -408,8 +524,14 @@ public class mainGUI extends JFrame {
 
         });
 
-        // 保存按钮
+        // 库存保存按钮
         JButton btnSave = new JButton("保存");
+        btnSave.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+
+            }
+        });
         panel_11.add(btnSave, BorderLayout.EAST);
 
         Box horizontalBox_totalIncomingPrice = Box.createHorizontalBox();
