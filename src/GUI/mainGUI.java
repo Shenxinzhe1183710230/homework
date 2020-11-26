@@ -72,7 +72,10 @@ public class mainGUI extends JFrame {
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         panel.add(scrollPane, BorderLayout.CENTER);
-        Vector<Object> name = returnVector.getHeadName(db,"itemmanager");
+        Vector<Object> name = new Vector<Object>();
+        name.add("id");
+        name.add("name");
+        name.add("outprice");
         Vector<Vector<Object>> data = returnVector.FromDBReadAll(db,"itemmanager",name);
         DefaultTableModel tablemodel = new DefaultTableModel(data, name);
         table = new JTable();
@@ -90,22 +93,14 @@ public class mainGUI extends JFrame {
         JScrollPane scrollPane_1 = new JScrollPane();
         panel_1.add(scrollPane_1, BorderLayout.CENTER);
 
-        Vector<String> name_1 = new Vector<String>();
-        name_1.add("序号");
-        name_1.add("姓名");
-        name_1.add("联系方式");
-        //Vector<Vector<Object>> data_1 = op.FromDBReadALL(db, "用户");  // 从数据读
-        Vector<Vector<Object>> data_1 = new Vector<Vector<Object>>();
-        Vector<Object> temp_1 = new Vector<Object>();
-        temp_1.add("id");
-        temp_1.add("name");
-        temp_1.add("phone");
-        data_1.add(temp_1);
+        Vector<Object> name_1 = returnVector.getHeadName(db,"customermanager");
+        Vector<Vector<Object>> data_1 = returnVector.FromDBReadAll(db,"customermanager",name_1);
         DefaultTableModel tablemodel_1 = new DefaultTableModel(data_1, name_1);
         table_1 = new JTable();
         table_1.setModel(tablemodel_1);
         scrollPane_1.setViewportView(table_1);
 
+        // 新增用户按钮
         btnNewButton_1.addActionListener(new ActionListener(){
 
             @Override
@@ -131,11 +126,10 @@ public class mainGUI extends JFrame {
         JTabbedPane tabbedPane_1 = new JTabbedPane(JTabbedPane.TOP);
         panel_2.add(tabbedPane_1, BorderLayout.CENTER);
 
-        //创建订单
+        //开销售单
         JPanel panel_6 = new JPanel();
         tabbedPane_1.addTab("\u5F00\u9500\u552E\u5355", null, panel_6, null);
         panel_6.setLayout(new BorderLayout(0, 0));
-
         Box horizontalBox = Box.createHorizontalBox();
         panel_6.add(horizontalBox, BorderLayout.NORTH);
 
@@ -202,26 +196,29 @@ public class mainGUI extends JFrame {
         });
 
 
+        Vector<Object> order_name = returnVector.getHeadName(db,"ordermanager");
         //待审核
         JPanel panel_5 = new JPanel();
         tabbedPane_1.addTab("待审核", null, panel_5, null);
         panel_5.setLayout(new BorderLayout(0, 0));
-
         JScrollPane scrollPane_3 = new JScrollPane();
         panel_5.add(scrollPane_3, BorderLayout.CENTER);
-
+        Vector<Vector<Object>> data_3 = returnVector.FromDBRead(db, "ordermanager", order_name, "1", "State");
+        DefaultTableModel tablemodel_3 = new DefaultTableModel(data_3, order_name);
         table_3 = new JTable();
+        table_3.setModel(tablemodel_3);
         scrollPane_3.setViewportView(table_3);
 
         //待收款
         JPanel panel_7 = new JPanel();
         tabbedPane_1.addTab("待收款", null, panel_7, null);
         panel_7.setLayout(new BorderLayout(0, 0));
-
         JScrollPane scrollPane_4 = new JScrollPane();
         panel_7.add(scrollPane_4, BorderLayout.CENTER);
-
+        Vector<Vector<Object>> data_4 = returnVector.FromDBRead(db, "ordermanager", order_name, "2", "State");
+        DefaultTableModel tablemodel_4 = new DefaultTableModel(data_4, order_name);
         table_4 = new JTable();
+        table_4.setModel(tablemodel_4);
         scrollPane_4.setViewportView(table_4);
 
 
@@ -229,47 +226,52 @@ public class mainGUI extends JFrame {
         JPanel panel_8 = new JPanel();
         tabbedPane_1.addTab("\u9000\u8D27", null, panel_8, null);
         panel_8.setLayout(new BorderLayout(0, 0));
-
         JScrollPane scrollPane_5 = new JScrollPane();
         panel_8.add(scrollPane_5, BorderLayout.CENTER);
-
+        Vector<Vector<Object>> data_5 = returnVector.FromDBRead(db, "ordermanager", order_name, "3", "State");
+        DefaultTableModel tablemodel_5 = new DefaultTableModel(data_5, order_name);
         table_5 = new JTable();
+        table_5.setModel(tablemodel_5);
         scrollPane_5.setViewportView(table_5);
-
 
         //已完成
         JPanel panel_12 = new JPanel();
         tabbedPane_1.addTab("已完成", null, panel_12, null);
-
+        panel_12.setLayout(new BorderLayout(0, 0));
+        JScrollPane scrollPane_6 = new JScrollPane();
+        panel_12.add(scrollPane_6, BorderLayout.CENTER);
+        Vector<Vector<Object>> data_6 = returnVector.FromDBRead(db, "ordermanager", order_name, "4", "State");
+        DefaultTableModel tablemodel_6 = new DefaultTableModel(data_6, order_name);
+        table_6 = new JTable();
+        table_6.setModel(tablemodel_6);
+        scrollPane_6.setViewportView(table_6);
 
         //订单列表
         JPanel panel_4 = new JPanel();
         tabbedPane_1.addTab("订单列表", null, panel_4, null);
         panel_4.setLayout(new BorderLayout(0, 0));
-
         JScrollPane scrollPane_8 = new JScrollPane();
         panel_4.add(scrollPane_8, BorderLayout.CENTER);
-
+        Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",order_name);
+        DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, order_name);
         table_8 = new JTable();
+        table_8.setModel(tablemodel_8);
         scrollPane_8.setViewportView(table_8);
-
 
         //查看销售单
         JPanel panel_9 = new JPanel();
         tabbedPane_1.addTab("\u67E5\u770B\u9500\u552E\u5355", null, panel_9, null);
         panel_9.setLayout(new BorderLayout(0, 0));
-
-        JScrollPane scrollPane_6 = new JScrollPane();
-        panel_9.add(scrollPane_6, BorderLayout.CENTER);
-
+        JScrollPane scrollPane_7 = new JScrollPane();
+        panel_9.add(scrollPane_7, BorderLayout.CENTER);
         table_6 = new JTable();
-        scrollPane_6.setViewportView(table_6);
+        scrollPane_7.setViewportView(table_6);
 
+
+        // 库存
         JPanel panel_3 = new JPanel();
         tabbedPane.addTab("\u5E93\u5B58", null, panel_3, null);
         panel_3.setLayout(new BorderLayout(0, 0));
-
-        // 库存
         JTabbedPane tabbedPane_2 = new JTabbedPane(JTabbedPane.TOP);
         panel_3.add(tabbedPane_2, BorderLayout.CENTER);
 
@@ -277,10 +279,8 @@ public class mainGUI extends JFrame {
         JPanel panel_11 = new JPanel();
         tabbedPane_2.addTab("进货", null, panel_11, null);
         panel_11.setLayout(new BorderLayout(0, 0));
-
-        JScrollPane scrollPane_7 = new JScrollPane();
-        panel_11.add(scrollPane_7, BorderLayout.CENTER);
-
+        JScrollPane scrollPane_9 = new JScrollPane();
+        panel_11.add(scrollPane_9, BorderLayout.CENTER);
         Vector<String> name_7 = new Vector<String>();
         name_7.add("货品");
         name_7.add("数目");
@@ -295,44 +295,24 @@ public class mainGUI extends JFrame {
         DefaultTableModel tablemodel_7 = new DefaultTableModel(data_7, name_7);
         table_7 = new JTable();
         table_7.setModel(tablemodel_7);
-        scrollPane_7.setViewportView(table_7);
+        scrollPane_9.setViewportView(table_7);
 
-        // 清点（真正的库存）
+        // 清点
         JPanel panel_13 = new JPanel();
         tabbedPane_2.addTab("清点", null, panel_13, null);
         panel_13.setLayout(new BorderLayout(0, 0));
-
         JScrollPane scrollPane_10 = new JScrollPane();
         panel_13.add(scrollPane_10, BorderLayout.CENTER);
-
-        Vector<String> name_10 = new Vector<String>();
+        Vector<Object> name_10 = new Vector<>();
         name_10.add("id");
-        name_10.add("货品名");
-        name_10.add("剩余");
-        //Vector<Vector<Object>> data_10 = op.FromDBReadALL(db, "库存"); // 从数据库读入
-        Vector<Vector<Object>> data_10 = new Vector<Vector<Object>>();
-        Vector<Object> temp_10 = new Vector<Object>();
-        temp_10.add("name");
-        temp_10.add("number");
-        temp_10.add("price");
-        data_10.add(temp_10);
+        name_10.add("name");
+        name_10.add("num");
+        Vector<Vector<Object>> data_10 = returnVector.FromDBReadAll(db,"itemmanager",name_10);
         DefaultTableModel tablemodel_10 = new DefaultTableModel(data_10, name_10);
         table_10 = new JTable();
         table_10.setModel(tablemodel_10);
-        scrollPane_10.setViewportView(table_10 = new JTable());
-        scrollPane_8.setViewportView(table_8);
+        scrollPane_10.setViewportView(table_10);
 
-        Vector<String> name_8 = new Vector<String>();
-        name_8.add("id");
-        name_8.add("货品名");
-        name_8.add("剩余");
-        //Vector<Vector<Object>> data_8 = op.FromDBReadALL(db, "订单");  // 从数据库读入
-        Vector<Vector<Object>> data_8 = new Vector<Vector<Object>>();
-        Vector<Object> temp_8 = new Vector<Object>();
-        temp_8.add("id");
-        temp_8.add("name");
-        temp_8.add("remain");
-        data_8.add(temp_8);
-        DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, name_8);
+
     }
 }
