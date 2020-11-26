@@ -1,7 +1,8 @@
 package Bean;
-
+import op.returnVector;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Vector;
 
 public class main {
     public static void main(String[] args) throws SQLException {
@@ -24,8 +25,8 @@ public class main {
         //ResultSet resultSet=dbBean.executeQuery("wkr","nameandpassword","user_name");
 //        String password="1234567";
         ResultSet resultSet=null;
-//        resultSet=dbBean.executeFind("bowl","itemmanger","name");
-        resultSet=dbBean.executeTablehead("itemmanager");
+//        Vector<Vector<Object>> res = new Vector<Vector<Object>>();returnVector.FromDBRead(dbBean,"itemmanager","sxz","name");
+//        resultSet=dbBean.executeTablehead("itemmanager");
         while (resultSet.next())
         {
             System.out.println(resultSet.getString(1));

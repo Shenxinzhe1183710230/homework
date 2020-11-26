@@ -94,6 +94,26 @@ public class DBBean {
         return rs;
     }
 
+
+    /**
+     *查询数据库中全部数据
+     * @param tableName     想要查询的数据库的表名
+     * @return   返回查询到的所有行
+     *  eg:   dbBean.executeQuery("wkr","nameandpassword","user_name");
+     */
+    public ResultSet executeFindAll(String tableName) {
+        ResultSet rs = null;
+        String sql="select * from "+tableName;
+        System.out.print("--全部查询语句:"+sql+"\n");
+        try {
+            rs = stmt.executeQuery(sql);
+            System.out.println(rs);
+        } catch (Exception ex) {
+            System.out.println(ex);
+            System.out.println("ִ执行查询错误！");
+        }
+        return rs;
+    }
     /**
      *
      * @param table_name 数据库的表名  eg:itemmanager
