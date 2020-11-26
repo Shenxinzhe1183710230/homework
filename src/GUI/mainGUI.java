@@ -68,7 +68,6 @@ public class mainGUI extends JFrame {
         JPanel panel = new JPanel();
         tabbedPane.addTab("\u8D27\u54C1", null, panel, null);
         panel.setLayout(new BorderLayout(0, 0));
-
         JScrollPane scrollPane = new JScrollPane();
         scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
         panel.add(scrollPane, BorderLayout.CENTER);
@@ -82,17 +81,19 @@ public class mainGUI extends JFrame {
         table.setModel(tablemodel);
         scrollPane.setViewportView(table);
 
+
         // 客户
         JPanel panel_1 = new JPanel();
         tabbedPane.addTab("\u5BA2\u6237", null, panel_1, null);
         panel_1.setLayout(new BorderLayout(0, 0));
 
+        // 新增用户按钮
         JButton btnNewButton_1 = new JButton("\u65B0\u589E\u5BA2\u6237");
         panel_1.add(btnNewButton_1, BorderLayout.NORTH);
 
+        // 用户列表
         JScrollPane scrollPane_1 = new JScrollPane();
         panel_1.add(scrollPane_1, BorderLayout.CENTER);
-
         Vector<Object> name_1 = returnVector.getHeadName(db,"customermanager");
         Vector<Vector<Object>> data_1 = returnVector.FromDBReadAll(db,"customermanager",name_1);
         DefaultTableModel tablemodel_1 = new DefaultTableModel(data_1, name_1);
@@ -100,22 +101,19 @@ public class mainGUI extends JFrame {
         table_1.setModel(tablemodel_1);
         scrollPane_1.setViewportView(table_1);
 
-        // 新增用户按钮
+        // 新增用户按钮绑定
         btnNewButton_1.addActionListener(new ActionListener(){
 
             @Override
             public void actionPerformed(ActionEvent e) {
                 // 弹出对话框
-                // 填对话框
-                // 填完转化成一项，放到model中，放到数据库中
-                Vector<Object> temp = new Vector<Object>();
-                temp.add("id");
-                temp.add("name");
-                temp.add("phone");
-                tablemodel_1.addRow(temp);
-            }
+                windowsToCreateCustomer window_2 = new windowsToCreateCustomer(db, table_1);
+                window_2.setVisible(true);
+                window_2.setSize(400, 400);
 
+            }
         });
+
 
         //销售
         JPanel panel_2 = new JPanel();
