@@ -26,6 +26,28 @@ public class DBBean {
 
     }
 
+    /**
+     *删除数据库中数据
+     * @param value      想要删除的那一列的哪个值
+     * @param tableName     想要查询的数据库的表名
+     * @param index      想要查询数据库的表的哪一列的名字
+     * @return   返回查询到的所有行
+     *  eg:   dbBean.executeDelete("wkr","nameandpassword","user_name");
+     */
+    public int executeDelete(String value,String tableName,String index){
+        int rs = 0;
+        String sql="delete from "+tableName+" where "+index+"="+"'"+value+"'";//定义一个删除语句
+        System.out.print("--删除语句:"+sql+"\n");
+        try {
+            rs = stmt.executeUpdate(sql);
+        } catch (Exception ex) {
+            System.out.println(ex);
+            System.out.println("ִ执行删除错误！");
+        }
+        return rs;
+    }
+
+    //更新数据库中的数据
     public int executeUpdate(String s) {
         int result = 0;
         System.out.println("--更新语句:"+s+"\n");
@@ -37,9 +59,18 @@ public class DBBean {
         return result;
     }
 
-    public ResultSet executeQuery(String s) {
+
+    /**
+     *查询数据库中数据
+     * @param value      想要查询的值
+     * @param tableName     想要查询的数据库的表名
+     * @param index      想要查询数据库的表的哪一列的名字
+     * @return   返回查询到的所有行
+     *  eg:   dbBean.executeQuery("wkr","nameandpassword","user_name");
+     */
+    public ResultSet executeQuery(String value,String tableName,String index) {
         ResultSet rs = null;
-        String sql="select * from nameandpassword where user_name="+"'"+s+"'";//定义一个查询语句
+        String sql="select * from "+tableName+" where "+index+"="+"'"+value+"'";//定义一个查询语句
         System.out.print("--查询语句:"+sql+"\n");
         try {
             rs = stmt.executeQuery(sql);
@@ -52,16 +83,19 @@ public class DBBean {
     }
 
     /**
-     *
+     *向数据库中插入一个数据
      * @param table_name    数据库的表名及参数名   eg:table(id,name,age)
-     * @param value         要传入的值           eg:1,sxz,20
+     * @param value         要传入的值   字符串需要打单引号          eg:1,'sxz',20
+     * dbBean.execQuery("nameandpassword(user_name,user_password,age)","'yzj','654321',10");
      */
-    public void execQuery(String table_name,String value){
-        String sql="insert into homework_login."+table_name +"values"+"("+value+")";
+    public void executeQuery(String table_name,String value){
+        String sql="insert into homework_login."+table_name +"values"+"("+value+")";//定义一个插入语句
+        System.out.println(sql);
         try {
             stmt.executeUpdate(sql);
         } catch (SQLException e) {
             // TODO Auto-generated catch block
+            System.out.println(e);
             System.out.println("执行插入错误！");
         }
     }

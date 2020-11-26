@@ -1,0 +1,7 @@
+数据库类 DBBean
+
+初始化new即连接数据库
+操作：
+查询：ResultSet executeQuery(String s)//查询的名字
+插入： void  execQuery(String s。。。。)要插入的参数，
+更新： int executeUpdate(String s)//待定
