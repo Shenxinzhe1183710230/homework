@@ -31,9 +31,12 @@ public class boolean_button {
             @Override
             public void tableChanged(TableModelEvent e) {
                 if(e.getColumn()==size){
-                    if((Boolean) data.get(e.getFirstRow()).get(size))
-                        db.executeUpdate((String)(data.get(e.getFirstRow()).get(0))
-                                ,"ordermanager","ID",nextstate,"State");
+                    if((Boolean) data.get(e.getFirstRow()).get(size)) {
+                        db.executeUpdate((String) (data.get(e.getFirstRow()).get(0))
+                                , "ordermanager", "ID", nextstate, "State");
+//                        db.executeUpdate((String) (data.get(e.getFirstRow()).get(0))
+//                                , "ordermanager", "ID", nextstate, "");
+                    }
                     else
                         db.executeUpdate((String)(data.get(e.getFirstRow()).get(0))
                                 ,"ordermanager","ID",nowstate,"State");

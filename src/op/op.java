@@ -31,9 +31,10 @@ public class op {
     public static String StateConvert(String StateID){
         switch (StateID){
             case "1": return "待审核";
-            case "2": return "代收款";
-            case "3": return "退货";
-            case "4": return "已完成";
+            case "2": return "待收款";
+            case "3": return "已完成";
+            case "4": return "退货中";
+            case "5": return "已退货";
             default: return "Wrong";
         }
     }
