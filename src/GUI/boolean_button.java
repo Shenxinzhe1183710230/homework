@@ -18,20 +18,20 @@ public class boolean_button {
      * @param size=order_name2.size()-1 或者 order_name.size()
      * @param tablemodel
      * @param db 数据库
-     * @param nextstate   下一个状态
-     * @param nowstate     当前状态
      *
+     * @see javax.swing.JComponent#contains
+     * @see java.awt.Component#contains
      */
-    public void boolean_button(JTable table, Vector<Vector<Object>> data, int size, DefaultTableModel tablemodel, DBBean db,String nextstate,String nowstate){
-        TableColumn tcm4 = table.getColumnModel().getColumn(size-1);
-        tcm4.setCellEditor(table.getDefaultEditor(Boolean.class));
-        tcm4.setCellRenderer(table.getDefaultRenderer(Boolean.class));
+    public static void boolean_button(JTable table, Vector<Vector<Object>> data, int size, DefaultTableModel tablemodel
+            , DBBean db,TableColumn tcm,String nextstate,String nowstate){
+//        TableColumn tcm4 = table.getColumnModel().getColumn(size-1);
+        tcm.setCellEditor(table.getDefaultEditor(Boolean.class));
+        tcm.setCellRenderer(table.getDefaultRenderer(Boolean.class));
         tablemodel.addTableModelListener(new TableModelListener() {
             @Override
             public void tableChanged(TableModelEvent e) {
-                if(e.getColumn()==size-1){
-                    System.out.println(data.get(e.getFirstRow()).get(size-1)+"...........");
-                    if((Boolean) data.get(e.getFirstRow()).get(size-1))
+                if(e.getColumn()==size){
+                    if((Boolean) data.get(e.getFirstRow()).get(size))
                         db.executeUpdate((String)(data.get(e.getFirstRow()).get(0))
                                 ,"ordermanager","ID",nextstate,"State");
                     else

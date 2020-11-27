@@ -114,6 +114,8 @@ public class DBBean {
         }
         return rs;
     }
+
+
     /**
      *
      * @param table_name 数据库的表名  eg:itemmanager

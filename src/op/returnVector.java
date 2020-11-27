@@ -24,7 +24,10 @@ public class returnVector {
             // 读表头信息
             for(int i=0;i<vector.size();i++){
                 try {
-                    v.add(temp.getString((String)vector.get(i)));
+                    if (String.valueOf(vector.get(i)).equals("State") && tablename.equals("ordermanager")){
+                        v.add(op.StateConvert(temp.getString((String)vector.get(i))));
+                    }
+                    else v.add(temp.getString((String)vector.get(i)));
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }
@@ -56,7 +59,10 @@ public class returnVector {
             // 读表头信息
             for(int i=0;i<vector.size();i++){
                 try {
-                    v.add(temp.getString((String)vector.get(i)));
+                    if (String.valueOf(vector.get(i)).equals("State") && tablename.equals("ordermanager")){
+                        v.add(op.StateConvert(temp.getString((String)vector.get(i))));
+                    }
+                    else v.add(temp.getString((String)vector.get(i)));
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }

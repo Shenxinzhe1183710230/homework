@@ -268,23 +268,24 @@ public class mainGUI extends JFrame {
         table_3.setModel(tablemodel_3);
         scrollPane_3.setViewportView(table_3);
         TableColumn tcm = table_3.getColumnModel().getColumn(order_name2.size()-1);
-        tcm.setCellEditor(table_3.getDefaultEditor(Boolean.class));
-        tcm.setCellRenderer(table_3.getDefaultRenderer(Boolean.class));
-        tablemodel_3.addTableModelListener(new TableModelListener() {
-            @Override
-            // 监听器可写成函数
-            public void tableChanged(TableModelEvent e) {
-                if(e.getColumn()==order_name2.size()-1){
-                    if((Boolean) data_3.get(e.getFirstRow()).get(order_name2.size()-1))
-                        db.executeUpdate((String)(data_3.get(e.getFirstRow()).get(0))
-                                ,"ordermanager","ID","3","State");
-                    else
-                        db.executeUpdate((String)(data_3.get(e.getFirstRow()).get(0))
-                                ,"ordermanager","ID","2","State");
-                }
-
-            }
-        });
+        boolean_button.boolean_button(table_3,data_3,order_name2.size()-1,tablemodel_3,db,tcm,"2","1");
+//        tcm.setCellEditor(table_3.getDefaultEditor(Boolean.class));
+//        tcm.setCellRenderer(table_3.getDefaultRenderer(Boolean.class));
+//        tablemodel_3.addTableModelListener(new TableModelListener() {
+//            @Override
+//            // 监听器可写成函数
+//            public void tableChanged(TableModelEvent e) {
+//                if(e.getColumn()==order_name2.size()-1){
+//                    if((Boolean) data_3.get(e.getFirstRow()).get(order_name2.size()-1))
+//                        db.executeUpdate((String)(data_3.get(e.getFirstRow()).get(0))
+//                                ,"ordermanager","ID","2","State");
+//                    else
+//                        db.executeUpdate((String)(data_3.get(e.getFirstRow()).get(0))
+//                                ,"ordermanager","ID","1","State");
+//                }
+//
+//            }
+//        });
 //        new boolean_button().boolean_button(table_3,data_3,order_name2.size()-1,tablemodel_3,db,"2","1");
 
         JButton btnNewButton = new JButton("确认");
@@ -298,23 +299,24 @@ public class mainGUI extends JFrame {
                 DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, order_name2);
                 table_4.setModel(tablemodel_tmp_nextState);
                 TableColumn tcm = table_4.getColumnModel().getColumn(order_name2.size()-1);
-                tcm.setCellEditor(table_4.getDefaultEditor(Boolean.class));
-                tcm.setCellRenderer(table_4.getDefaultRenderer(Boolean.class));
-                tablemodel_tmp.addTableModelListener(new TableModelListener() {
-                    @Override
-                    // 监听器可写成函数
-                    public void tableChanged(TableModelEvent e) {
-                        if(e.getColumn()==order_name2.size()-1){
-                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
-                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-                                        ,"ordermanager","ID","3","State");
-                            else
-                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-                                        ,"ordermanager","ID","2","State");
-                        }
-
-                    }
-                });
+                boolean_button.boolean_button(table_4,data_tmp,order_name2.size()-1,tablemodel_tmp,db,tcm,"2","1");
+//                tcm.setCellEditor(table_4.getDefaultEditor(Boolean.class));
+//                tcm.setCellRenderer(table_4.getDefaultRenderer(Boolean.class));
+//                tablemodel_tmp.addTableModelListener(new TableModelListener() {
+//                    @Override
+//                    // 监听器可写成函数
+//                    public void tableChanged(TableModelEvent e) {
+//                        if(e.getColumn()==order_name2.size()-1){
+//                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
+//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
+//                                        ,"ordermanager","ID","2","State");
+//                            else
+//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
+//                                        ,"ordermanager","ID","1","State");
+//                        }
+//
+//                    }
+//                });
             }
         });
         panel_5.add(btnNewButton, BorderLayout.SOUTH);
@@ -333,22 +335,23 @@ public class mainGUI extends JFrame {
         table_4.setModel(tablemodel_4);
         scrollPane_4.setViewportView(table_4);
         TableColumn tcm2 = table_4.getColumnModel().getColumn(order_name2.size()-1);
-        tcm2.setCellEditor(table_4.getDefaultEditor(Boolean.class));
-        tcm2.setCellRenderer(table_4.getDefaultRenderer(Boolean.class));
-        tablemodel_4.addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                if(e.getColumn()==order_name2.size()-1){
-                    if((Boolean) data_4.get(e.getFirstRow()).get(order_name2.size()-1))
-                        db.executeUpdate((String)(data_4.get(e.getFirstRow()).get(0))
-                                ,"ordermanager","ID","3","State");
-                    else
-                        db.executeUpdate((String)(data_4.get(e.getFirstRow()).get(0))
-                                ,"ordermanager","ID","2","State");
-                }
-
-            }
-        });
+        boolean_button.boolean_button(table_4,data_4,order_name2.size()-1,tablemodel_4,db,tcm2,"3","2");
+//        tcm2.setCellEditor(table_4.getDefaultEditor(Boolean.class));
+//        tcm2.setCellRenderer(table_4.getDefaultRenderer(Boolean.class));
+//        tablemodel_4.addTableModelListener(new TableModelListener() {
+//            @Override
+//            public void tableChanged(TableModelEvent e) {
+//                if(e.getColumn()==order_name2.size()-1){
+//                    if((Boolean) data_4.get(e.getFirstRow()).get(order_name2.size()-1))
+//                        db.executeUpdate((String)(data_4.get(e.getFirstRow()).get(0))
+//                                ,"ordermanager","ID","3","State");
+//                    else
+//                        db.executeUpdate((String)(data_4.get(e.getFirstRow()).get(0))
+//                                ,"ordermanager","ID","2","State");
+//                }
+//
+//            }
+//        });
         JButton btnNewButton_4 = new JButton("确认");
         btnNewButton_4.addActionListener(new ActionListener() {
             @Override
@@ -360,29 +363,30 @@ public class mainGUI extends JFrame {
                 DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, order_name2);
                 table_5.setModel(tablemodel_tmp_nextState);
                 TableColumn tcm2 = table_4.getColumnModel().getColumn(order_name2.size()-1);
-                tcm2.setCellEditor(table_4.getDefaultEditor(Boolean.class));
-                tcm2.setCellRenderer(table_4.getDefaultRenderer(Boolean.class));
-                tablemodel_tmp.addTableModelListener(new TableModelListener() {
-                    @Override
-                    // 监听器可写成函数
-                    public void tableChanged(TableModelEvent e) {
-                        if(e.getColumn()==order_name2.size()-1){
-                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
-                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-                                        ,"ordermanager","ID","3","State");
-                            else
-                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-                                        ,"ordermanager","ID","2","State");
-                        }
-
-                    }
-                });
+                boolean_button.boolean_button(table_4,data_tmp,order_name2.size()-1,tablemodel_tmp,db,tcm2,"3","2");
+//                tcm2.setCellEditor(table_4.getDefaultEditor(Boolean.class));
+//                tcm2.setCellRenderer(table_4.getDefaultRenderer(Boolean.class));
+//                tablemodel_tmp.addTableModelListener(new TableModelListener() {
+//                    @Override
+//                    // 监听器可写成函数
+//                    public void tableChanged(TableModelEvent e) {
+//                        if(e.getColumn()==order_name2.size()-1){
+//                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
+//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
+//                                        ,"ordermanager","ID","3","State");
+//                            else
+//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
+//                                        ,"ordermanager","ID","2","State");
+//                        }
+//
+//                    }
+//                });
             }
         });
         panel_7.add(btnNewButton_4, BorderLayout.SOUTH);
 
 
-        //待退货
+        //退货
         JPanel panel_8 = new JPanel();
         tabbedPane_1.addTab("\u9000\u8D27", null, panel_8, null);
         panel_8.setLayout(new BorderLayout(0, 0));
@@ -392,24 +396,25 @@ public class mainGUI extends JFrame {
         DefaultTableModel tablemodel_5 = new DefaultTableModel(data_5, order_name2);
         table_5 = new JTable();
         table_5.setModel(tablemodel_5);
-//        new boolean_button().boolean_button(table_5,data_5,order_name2.size()-1,tablemodel_5,db,"4","3");
         scrollPane_5.setViewportView(table_5);
         TableColumn tcm3 = table_5.getColumnModel().getColumn(order_name2.size()-1);
-        tcm3.setCellEditor(table_5.getDefaultEditor(Boolean.class));
-        tcm3.setCellRenderer(table_5.getDefaultRenderer(Boolean.class));
-        tablemodel_5.addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                if(e.getColumn()==order_name2.size()-1){
-                    if((Boolean) data_5.get(e.getFirstRow()).get(order_name2.size()-1))
-                        db.executeUpdate((String)(data_5.get(e.getFirstRow()).get(0))
-                                ,"ordermanager","ID","4","State");
-                    else
-                        db.executeUpdate((String)(data_5.get(e.getFirstRow()).get(0))
-                                ,"ordermanager","ID","3","State");
-                }
-            }
-        });
+        boolean_button.boolean_button(table_5,data_5,order_name2.size()-1,tablemodel_5,db,tcm3,"4","3");
+
+//        tcm3.setCellEditor(table_5.getDefaultEditor(Boolean.class));
+//        tcm3.setCellRenderer(table_5.getDefaultRenderer(Boolean.class));
+//        tablemodel_5.addTableModelListener(new TableModelListener() {
+//            @Override
+//            public void tableChanged(TableModelEvent e) {
+//                if(e.getColumn()==order_name2.size()-1){
+//                    if((Boolean) data_5.get(e.getFirstRow()).get(order_name2.size()-1))
+//                        db.executeUpdate((String)(data_5.get(e.getFirstRow()).get(0))
+//                                ,"ordermanager","ID","4","State");
+//                    else
+//                        db.executeUpdate((String)(data_5.get(e.getFirstRow()).get(0))
+//                                ,"ordermanager","ID","3","State");
+//                }
+//            }
+//        });
         JButton btnNewButton_5 = new JButton("确认");
         btnNewButton_5.addActionListener(new ActionListener() {
             @Override
@@ -421,22 +426,23 @@ public class mainGUI extends JFrame {
                 DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, order_name2);
                 table_6.setModel(tablemodel_tmp_nextState);
                 TableColumn tcm2 = table_5.getColumnModel().getColumn(order_name2.size()-1);
-                tcm2.setCellEditor(table_5.getDefaultEditor(Boolean.class));
-                tcm2.setCellRenderer(table_5.getDefaultRenderer(Boolean.class));
-                tablemodel_tmp.addTableModelListener(new TableModelListener() {
-                    @Override
-                    public void tableChanged(TableModelEvent e) {
-                        if(e.getColumn()==order_name2.size()-1){
-                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
-                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-                                        ,"ordermanager","ID","4","State");
-                            else
-                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-                                        ,"ordermanager","ID","3","State");
-                        }
-
-                    }
-                });
+                boolean_button.boolean_button(table_5,data_tmp,order_name2.size()-1,tablemodel_tmp,db,tcm2,"4","3");
+//                tcm2.setCellEditor(table_5.getDefaultEditor(Boolean.class));
+//                tcm2.setCellRenderer(table_5.getDefaultRenderer(Boolean.class));
+//                tablemodel_tmp.addTableModelListener(new TableModelListener() {
+//                    @Override
+//                    public void tableChanged(TableModelEvent e) {
+//                        if(e.getColumn()==order_name2.size()-1){
+//                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
+//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
+//                                        ,"ordermanager","ID","4","State");
+//                            else
+//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
+//                                        ,"ordermanager","ID","3","State");
+//                        }
+//
+//                    }
+//                });
             }
         });
         panel_8.add(btnNewButton_5, BorderLayout.SOUTH);
@@ -453,21 +459,22 @@ public class mainGUI extends JFrame {
         table_6.setModel(tablemodel_6);
         scrollPane_6.setViewportView(table_6);
         TableColumn tcm4 = table_6.getColumnModel().getColumn(order_name2.size()-1);
-        tcm4.setCellEditor(table_6.getDefaultEditor(Boolean.class));
-        tcm4.setCellRenderer(table_6.getDefaultRenderer(Boolean.class));
-        tablemodel_6.addTableModelListener(new TableModelListener() {
-            @Override
-            public void tableChanged(TableModelEvent e) {
-                if(e.getColumn()==order_name2.size()-1){
-                    if((Boolean) data_6.get(e.getFirstRow()).get(order_name2.size()-1))
-                        db.executeUpdate((String)(data_6.get(e.getFirstRow()).get(0))
-                                ,"ordermanager","ID","4","State");
-                    else
-                        db.executeUpdate((String)(data_6.get(e.getFirstRow()).get(0))
-                                ,"ordermanager","ID","3","State");
-                }
-            }
-        });
+        boolean_button.boolean_button(table_6,data_6,order_name2.size()-1,tablemodel_6,db,tcm4,"3","4");
+//        tcm4.setCellEditor(table_6.getDefaultEditor(Boolean.class));
+//        tcm4.setCellRenderer(table_6.getDefaultRenderer(Boolean.class));
+//        tablemodel_6.addTableModelListener(new TableModelListener() {
+//            @Override
+//            public void tableChanged(TableModelEvent e) {
+//                if(e.getColumn()==order_name2.size()-1){
+//                    if((Boolean) data_6.get(e.getFirstRow()).get(order_name2.size()-1))
+//                        db.executeUpdate((String)(data_6.get(e.getFirstRow()).get(0))
+//                                ,"ordermanager","ID","3","State");
+//                    else
+//                        db.executeUpdate((String)(data_6.get(e.getFirstRow()).get(0))
+//                                ,"ordermanager","ID","4","State");
+//                }
+//            }
+//        });
         JButton btnNewButton_6 = new JButton("确认");
         btnNewButton_6.addActionListener(new ActionListener() {
             @Override
@@ -479,22 +486,23 @@ public class mainGUI extends JFrame {
                 DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, order_name2);
                 table_5.setModel(tablemodel_tmp_nextState);
                 TableColumn tcm2 = table_6.getColumnModel().getColumn(order_name2.size()-1);
-                tcm2.setCellEditor(table_6.getDefaultEditor(Boolean.class));
-                tcm2.setCellRenderer(table_6.getDefaultRenderer(Boolean.class));
-                tablemodel_tmp.addTableModelListener(new TableModelListener() {
-                    @Override
-                    public void tableChanged(TableModelEvent e) {
-                        if(e.getColumn()==order_name2.size()-1){
-                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
-                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-                                        ,"ordermanager","ID","3","State");
-                            else
-                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-                                        ,"ordermanager","ID","4","State");
-                        }
-
-                    }
-                });
+                boolean_button.boolean_button(table_6,data_tmp,order_name2.size()-1,tablemodel_tmp,db,tcm2,"3","4");
+//                tcm2.setCellEditor(table_6.getDefaultEditor(Boolean.class));
+//                tcm2.setCellRenderer(table_6.getDefaultRenderer(Boolean.class));
+//                tablemodel_tmp.addTableModelListener(new TableModelListener() {
+//                    @Override
+//                    public void tableChanged(TableModelEvent e) {
+//                        if(e.getColumn()==order_name2.size()-1){
+//                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
+//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
+//                                        ,"ordermanager","ID","3","State");
+//                            else
+//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
+//                                        ,"ordermanager","ID","4","State");
+//                        }
+//
+//                    }
+//                });
             }
         });
         panel_12.add(btnNewButton_6, BorderLayout.SOUTH);
@@ -513,15 +521,34 @@ public class mainGUI extends JFrame {
         Box horizontalBox_2 = Box.createHorizontalBox();
         panel_4.add(horizontalBox_2, BorderLayout.NORTH);
 
+        // 销售->订单列表->功能按钮部分->订单号tabel
         JLabel lblNewLabel_5 = new JLabel("订单号：");
         horizontalBox_2.add(lblNewLabel_5);
 
+        // 销售->订单列表->功能按钮部分->订单号输入的textfield
         textField_3 = new JTextField();
         horizontalBox_2.add(textField_3);
         textField_3.setColumns(10);
 
+        // 销售->订单列表->功能按钮部分->查询按钮
         JButton btnNewButton_7 = new JButton("查 询");
+        btnNewButton_7.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                table_8.setModel(new DefaultTableModel(returnVector.FromDBRead(db, "ordermanager", order_name, textField_3.getText(), "ID"), order_name));
+            }
+        });
         horizontalBox_2.add(btnNewButton_7);
+        // TODO 修改按钮
+        // 销售->订单列表->功能按钮部分->删除按钮
+        JButton btnDel = new JButton("删 除");
+        horizontalBox_2.add(btnDel);
+        btnDel.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+//                db.executeDelete(textField_3.getText(), );
+            }
+        });
 
         Component horizontalStrut_2 = Box.createHorizontalStrut(400);
         horizontalBox_2.add(horizontalStrut_2);
@@ -529,9 +556,11 @@ public class mainGUI extends JFrame {
         Box horizontalBox_3 = Box.createHorizontalBox();
         panel_4.add(horizontalBox_3, BorderLayout.SOUTH);
 
+        // 销售->订单列表->总利润部分->总利润label
         JLabel lblNewLabel_6 = new JLabel("总利润：");
         horizontalBox_3.add(lblNewLabel_6);
 
+        // 销售->订单列表->总利润部分->总利润显示的textfield
         textField_4 = new JTextField();
         textField_4.setHorizontalAlignment(SwingConstants.RIGHT);
         textField_4.setEditable(false);
@@ -539,6 +568,7 @@ public class mainGUI extends JFrame {
         horizontalBox_3.add(textField_4);
         textField_4.setColumns(1);
 
+        // 销售->订单列表->总利润部分->总利润显示的单位
         JLabel lblNewLabel_7 = new JLabel("元");
         horizontalBox_3.add(lblNewLabel_7);
 
@@ -631,7 +661,7 @@ public class mainGUI extends JFrame {
         table_10.setModel(tablemodel_10);
         scrollPane_10.setViewportView(table_10);
 
-        // 库存新增的保存
+        // 库存保存按钮的监听器
         btnSave.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -643,10 +673,8 @@ public class mainGUI extends JFrame {
                 DefaultTableModel tablemodel_10 = new DefaultTableModel(data_10, name_10);
                 table_10.setModel(tablemodel_10);
                 table_IncomingGoodsList.setModel(new DefaultTableModel(new Vector<Vector<Object>>(), name_7));
-
+                totalPriceDisplay.setText("");
             }
         });
-
-
     }
 }

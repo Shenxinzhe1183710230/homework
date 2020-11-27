@@ -1,5 +1,5 @@
 package Bean;
-import op.returnVector;
+import op.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Vector;
@@ -27,10 +27,11 @@ public class main {
         ResultSet resultSet=null;
 //        Vector<Vector<Object>> res = new Vector<Vector<Object>>();returnVector.FromDBRead(dbBean,"itemmanager","sxz","name");
 //        resultSet=dbBean.executeTablehead("itemmanager");
-        while (resultSet.next())
-        {
-            System.out.println(resultSet.getString(1));
-
-        }
+        System.out.println(returnVector.getHeadName(dbBean,"itemmanager"));
+//        while (resultSet.next()
+//        {
+//            System.out.println(resultSet.getString(1));
+//
+//        }
     }
 }
