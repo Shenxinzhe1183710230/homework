@@ -94,10 +94,10 @@ public class mainGUI extends JFrame {
         tabbedPane.addTab("客户(client)", null, panel_client, null);
         panel_client.setLayout(new BorderLayout(0, 0));
 
-        // 新增用户按钮
-        JButton btnNewButton_client_addNewClient = new JButton("\u65B0\u589E\u5BA2\u6237(btnNewButton_client_addNewClient)");
+        // 新增客户按钮
+        JButton btnNewButton_client_addNewClient = new JButton("新增客户");
         panel_client.add(btnNewButton_client_addNewClient, BorderLayout.NORTH);
-        // 新增用户按钮绑定
+        // 新增客户按钮绑定
         btnNewButton_client_addNewClient.addActionListener(new ActionListener(){
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -108,7 +108,7 @@ public class mainGUI extends JFrame {
             }
         });
 
-        // 用户列表
+        // 客户列表
         JScrollPane scrollPane_allClient = new JScrollPane();
         panel_client.add(scrollPane_allClient, BorderLayout.CENTER);
         Vector<Object> name_Of_AllClientTable = returnVector.getHeadName(db,"customermanager");

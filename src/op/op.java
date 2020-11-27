@@ -9,6 +9,11 @@ import java.util.Vector;
 
 public class op {
 
+    /**
+     * 新增订单时候，计算新增的订单中的所有商品的总价钱
+     * @param item   新增订单中的商品列表
+     * @return  返回总价钱
+     */
     public static float caculateAllPrice(Vector<Vector<Object>>item) {
         float sum=0;
         for(Vector<Object> x:item) {
@@ -34,6 +39,12 @@ public class op {
     }
 
 
+    /**
+     * 计算所有订单的净利润
+     * @param orderdata    所有订单数据
+     * @param db
+     * @return
+     */
     public static String TotalProfit(Vector<Vector<Object>> orderdata,DBBean db){
         float sum=0;
         ResultSet tmp;
