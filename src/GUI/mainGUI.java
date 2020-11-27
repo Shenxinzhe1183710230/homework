@@ -452,7 +452,14 @@ public class mainGUI extends JFrame {
         btnNewButton_7.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                table_8.setModel(new DefaultTableModel(returnVector.FromDBRead(db, "ordermanager", order_name, textField_3.getText(), "ID"), order_name));
+                DefaultTableModel temp;
+                if (textField_3.getText().equals("")){
+                    temp = new DefaultTableModel(returnVector.FromDBReadAll(db,"ordermanager",order_name), order_name);
+                }
+                else {
+                    temp = new DefaultTableModel(returnVector.FromDBRead(db, "ordermanager", order_name, textField_3.getText(), "ID"), order_name);
+                }
+                table_8.setModel(temp);
             }
         });
         horizontalBox_2.add(btnNewButton_7);
@@ -474,6 +481,7 @@ public class mainGUI extends JFrame {
         Box horizontalBox_3 = Box.createHorizontalBox();
         panel_4.add(horizontalBox_3, BorderLayout.SOUTH);
 
+        /** TODO
         // 销售->订单列表->总利润部分->总利润label
         JLabel lblNewLabel_6 = new JLabel("总利润：");
         horizontalBox_3.add(lblNewLabel_6);
@@ -489,7 +497,7 @@ public class mainGUI extends JFrame {
         // 销售->订单列表->总利润部分->总利润显示的单位
         JLabel lblNewLabel_7 = new JLabel("元");
         horizontalBox_3.add(lblNewLabel_7);
-
+        */
         Component horizontalStrut = Box.createHorizontalStrut(600);
         horizontalBox_3.add(horizontalStrut);
 
@@ -573,6 +581,7 @@ public class mainGUI extends JFrame {
         name_10.add("id");
         name_10.add("name");
         name_10.add("num");
+        name_10.add("inprice");
         Vector<Vector<Object>> data_10 = returnVector.FromDBReadAll(db,"itemmanager",name_10);
         DefaultTableModel tablemodel_10 = new DefaultTableModel(data_10, name_10);
         table_10 = new JTable();
