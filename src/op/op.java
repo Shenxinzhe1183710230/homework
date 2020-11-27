@@ -4,6 +4,7 @@ import Bean.DBBean;
 
 import javax.xml.transform.Result;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Vector;
 
 public class op {
@@ -33,8 +34,33 @@ public class op {
     }
 
 
-    public static String TotalProfit(Vector<Vector<Object>> orderdata, Vector<Vector<Object>> itemdata){
-        return null;
+    public static String TotalProfit(Vector<Vector<Object>> orderdata,DBBean db){
+        float sum=0;
+        ResultSet tmp;
+        for (Vector<Object> x:orderdata) {
+            String items=(String) x.get(1);
+            String tmp1[]=items.split("<|>");
+            float inPriceAll=0;
+
+            //算总开销
+            for(String x1:tmp1) {
+                if(!x1.equals("")) {
+                    String tmp2[]=x1.split(",");
+                    tmp=db.executeFind(tmp2[0], "itemmanager", "name");
+                    try {
+                        tmp.next();
+                        System.out.println(String.valueOf(tmp.getObject("inprice")));
+                        String inprice=String.valueOf(tmp.getObject("inprice"));
+                        inPriceAll+=Float.valueOf(inprice)*Integer.valueOf(tmp2[1]);
+                    } catch (SQLException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    }
+                }
+            }
+            sum+=Float.valueOf(String.valueOf(x.get(3)))-inPriceAll;
+        }
+        return String.valueOf(sum);
     }
 
 }

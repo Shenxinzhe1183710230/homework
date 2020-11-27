@@ -27,7 +27,9 @@ public class main {
         ResultSet resultSet=null;
 //        Vector<Vector<Object>> res = new Vector<Vector<Object>>();returnVector.FromDBRead(dbBean,"itemmanager","sxz","name");
 //        resultSet=dbBean.executeTablehead("itemmanager");
-        System.out.println(returnVector.getHeadName(dbBean,"itemmanager"));
+        System.out.println(returnVector.getHeadName(dbBean,"ordermanager"));
+        System.out.println(op.TotalProfit(returnVector.FromDBReadAll(dbBean,"ordermanager",returnVector.getHeadName(dbBean,"ordermanager")),dbBean));
+
 //        while (resultSet.next()
 //        {
 //            System.out.println(resultSet.getString(1));

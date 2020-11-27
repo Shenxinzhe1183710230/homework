@@ -36,6 +36,8 @@ public class mainGUI extends JFrame {
     private JTextField totalPriceDisplay;
     private JTextField textField_3;
     private JTextField textField_4;
+    private JScrollPane scrollPane_8 = new JScrollPane();
+    private JScrollPane scrollPane_3 = new JScrollPane();
     private DBBean db=new DBBean();
 
     /**
@@ -122,7 +124,9 @@ public class mainGUI extends JFrame {
             }
         });
 
-
+        Vector<Object> order_name = returnVector.getHeadName(db,"ordermanager");
+        Vector<Object> order_name2 = returnVector.getHeadName(db,"ordermanager");
+        order_name2.add("stateChange");
         //销售
         JPanel panel_2 = new JPanel();
         tabbedPane.addTab("\u9500\u552E", null, panel_2, null);
@@ -240,6 +244,19 @@ public class mainGUI extends JFrame {
                 data_2.clear();
                 table_2.setModel(new DefaultTableModel(data_2, name_2));
                 textField_1.setText("");
+                // 待审核刷新
+                Vector<Vector<Object>> data_3 = returnVector.FromDBRead(db, "ordermanager", order_name, "1", "State");
+                DefaultTableModel tablemodel_3 = new DefaultTableModel(data_3, order_name2);
+                table_3 = new JTable();
+                table_3.setModel(tablemodel_3);
+                scrollPane_3.setViewportView(table_3);
+
+                // 订单列表刷新
+                Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",order_name);
+                DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, order_name);
+                table_8 = new JTable();
+                table_8.setModel(tablemodel_8);
+                scrollPane_8.setViewportView(table_8);
             }
         });
 
@@ -253,14 +270,10 @@ public class mainGUI extends JFrame {
         });
 
 
-        Vector<Object> order_name = returnVector.getHeadName(db,"ordermanager");
-        Vector<Object> order_name2 = returnVector.getHeadName(db,"ordermanager");
-        order_name2.add("stateChange");
         //待审核
         JPanel panel_5 = new JPanel();
         tabbedPane_1.addTab("待审核", null, panel_5, null);
         panel_5.setLayout(new BorderLayout(0, 0));
-        JScrollPane scrollPane_3 = new JScrollPane();
         panel_5.add(scrollPane_3, BorderLayout.CENTER);
         Vector<Vector<Object>> data_3 = returnVector.FromDBRead(db, "ordermanager", order_name, "1", "State");
         DefaultTableModel tablemodel_3 = new DefaultTableModel(data_3, order_name2);
@@ -269,25 +282,6 @@ public class mainGUI extends JFrame {
         scrollPane_3.setViewportView(table_3);
         TableColumn tcm = table_3.getColumnModel().getColumn(order_name2.size()-1);
         boolean_button.boolean_button(table_3,data_3,order_name2.size()-1,tablemodel_3,db,tcm,"2","1");
-//        tcm.setCellEditor(table_3.getDefaultEditor(Boolean.class));
-//        tcm.setCellRenderer(table_3.getDefaultRenderer(Boolean.class));
-//        tablemodel_3.addTableModelListener(new TableModelListener() {
-//            @Override
-//            // 监听器可写成函数
-//            public void tableChanged(TableModelEvent e) {
-//                if(e.getColumn()==order_name2.size()-1){
-//                    if((Boolean) data_3.get(e.getFirstRow()).get(order_name2.size()-1))
-//                        db.executeUpdate((String)(data_3.get(e.getFirstRow()).get(0))
-//                                ,"ordermanager","ID","2","State");
-//                    else
-//                        db.executeUpdate((String)(data_3.get(e.getFirstRow()).get(0))
-//                                ,"ordermanager","ID","1","State");
-//                }
-//
-//            }
-//        });
-//        new boolean_button().boolean_button(table_3,data_3,order_name2.size()-1,tablemodel_3,db,"2","1");
-
         JButton btnNewButton = new JButton("确认");
         btnNewButton.addActionListener(new ActionListener() {
             @Override
@@ -298,25 +292,18 @@ public class mainGUI extends JFrame {
                 Vector<Vector<Object>> data_tmp_nextState = returnVector.FromDBRead(db, "ordermanager", order_name, "2", "State");
                 DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, order_name2);
                 table_4.setModel(tablemodel_tmp_nextState);
-                TableColumn tcm = table_4.getColumnModel().getColumn(order_name2.size()-1);
-                boolean_button.boolean_button(table_4,data_tmp,order_name2.size()-1,tablemodel_tmp,db,tcm,"2","1");
-//                tcm.setCellEditor(table_4.getDefaultEditor(Boolean.class));
-//                tcm.setCellRenderer(table_4.getDefaultRenderer(Boolean.class));
-//                tablemodel_tmp.addTableModelListener(new TableModelListener() {
-//                    @Override
-//                    // 监听器可写成函数
-//                    public void tableChanged(TableModelEvent e) {
-//                        if(e.getColumn()==order_name2.size()-1){
-//                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
-//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-//                                        ,"ordermanager","ID","2","State");
-//                            else
-//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-//                                        ,"ordermanager","ID","1","State");
-//                        }
-//
-//                    }
-//                });
+                // flag
+                TableColumn tcm_tmp_nextState = table_4.getColumnModel().getColumn(order_name2.size()-1);
+                boolean_button.boolean_button(table_4, data_tmp_nextState,order_name2.size()-1,tablemodel_tmp_nextState,db,tcm_tmp_nextState,"3","2");
+
+                TableColumn tcm = table_3.getColumnModel().getColumn(order_name2.size()-1);
+                boolean_button.boolean_button(table_3,data_tmp,order_name2.size()-1,tablemodel_tmp,db,tcm,"2","1");
+
+                Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",order_name);
+                DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, order_name);
+                table_8 = new JTable();
+                table_8.setModel(tablemodel_8);
+                scrollPane_8.setViewportView(table_8);
             }
         });
         panel_5.add(btnNewButton, BorderLayout.SOUTH);
@@ -336,22 +323,6 @@ public class mainGUI extends JFrame {
         scrollPane_4.setViewportView(table_4);
         TableColumn tcm2 = table_4.getColumnModel().getColumn(order_name2.size()-1);
         boolean_button.boolean_button(table_4,data_4,order_name2.size()-1,tablemodel_4,db,tcm2,"3","2");
-//        tcm2.setCellEditor(table_4.getDefaultEditor(Boolean.class));
-//        tcm2.setCellRenderer(table_4.getDefaultRenderer(Boolean.class));
-//        tablemodel_4.addTableModelListener(new TableModelListener() {
-//            @Override
-//            public void tableChanged(TableModelEvent e) {
-//                if(e.getColumn()==order_name2.size()-1){
-//                    if((Boolean) data_4.get(e.getFirstRow()).get(order_name2.size()-1))
-//                        db.executeUpdate((String)(data_4.get(e.getFirstRow()).get(0))
-//                                ,"ordermanager","ID","3","State");
-//                    else
-//                        db.executeUpdate((String)(data_4.get(e.getFirstRow()).get(0))
-//                                ,"ordermanager","ID","2","State");
-//                }
-//
-//            }
-//        });
         JButton btnNewButton_4 = new JButton("确认");
         btnNewButton_4.addActionListener(new ActionListener() {
             @Override
@@ -362,25 +333,18 @@ public class mainGUI extends JFrame {
                 Vector<Vector<Object>> data_tmp_nextState = returnVector.FromDBRead(db, "ordermanager", order_name, "3", "State");
                 DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, order_name2);
                 table_5.setModel(tablemodel_tmp_nextState);
+                // flag
+                TableColumn tcm_tmp_nextState = table_5.getColumnModel().getColumn(order_name2.size()-1);
+                boolean_button.boolean_button(table_5, data_tmp_nextState,order_name2.size()-1,tablemodel_tmp_nextState,db,tcm_tmp_nextState,"4","3");
+
                 TableColumn tcm2 = table_4.getColumnModel().getColumn(order_name2.size()-1);
                 boolean_button.boolean_button(table_4,data_tmp,order_name2.size()-1,tablemodel_tmp,db,tcm2,"3","2");
-//                tcm2.setCellEditor(table_4.getDefaultEditor(Boolean.class));
-//                tcm2.setCellRenderer(table_4.getDefaultRenderer(Boolean.class));
-//                tablemodel_tmp.addTableModelListener(new TableModelListener() {
-//                    @Override
-//                    // 监听器可写成函数
-//                    public void tableChanged(TableModelEvent e) {
-//                        if(e.getColumn()==order_name2.size()-1){
-//                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
-//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-//                                        ,"ordermanager","ID","3","State");
-//                            else
-//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-//                                        ,"ordermanager","ID","2","State");
-//                        }
-//
-//                    }
-//                });
+
+                Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",order_name);
+                DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, order_name);
+                table_8 = new JTable();
+                table_8.setModel(tablemodel_8);
+                scrollPane_8.setViewportView(table_8);
             }
         });
         panel_7.add(btnNewButton_4, BorderLayout.SOUTH);
@@ -399,22 +363,7 @@ public class mainGUI extends JFrame {
         scrollPane_5.setViewportView(table_5);
         TableColumn tcm3 = table_5.getColumnModel().getColumn(order_name2.size()-1);
         boolean_button.boolean_button(table_5,data_5,order_name2.size()-1,tablemodel_5,db,tcm3,"4","3");
-
-//        tcm3.setCellEditor(table_5.getDefaultEditor(Boolean.class));
-//        tcm3.setCellRenderer(table_5.getDefaultRenderer(Boolean.class));
-//        tablemodel_5.addTableModelListener(new TableModelListener() {
-//            @Override
-//            public void tableChanged(TableModelEvent e) {
-//                if(e.getColumn()==order_name2.size()-1){
-//                    if((Boolean) data_5.get(e.getFirstRow()).get(order_name2.size()-1))
-//                        db.executeUpdate((String)(data_5.get(e.getFirstRow()).get(0))
-//                                ,"ordermanager","ID","4","State");
-//                    else
-//                        db.executeUpdate((String)(data_5.get(e.getFirstRow()).get(0))
-//                                ,"ordermanager","ID","3","State");
-//                }
-//            }
-//        });
+        // 销售->退货->确认按钮->绑定监视器
         JButton btnNewButton_5 = new JButton("确认");
         btnNewButton_5.addActionListener(new ActionListener() {
             @Override
@@ -425,24 +374,16 @@ public class mainGUI extends JFrame {
                 Vector<Vector<Object>> data_tmp_nextState = returnVector.FromDBRead(db, "ordermanager", order_name, "4", "State");
                 DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, order_name2);
                 table_6.setModel(tablemodel_tmp_nextState);
+                TableColumn tcm_tmp_nextState = table_6.getColumnModel().getColumn(order_name2.size()-1);
+                boolean_button.boolean_button(table_6, data_tmp_nextState,order_name2.size()-1,tablemodel_tmp_nextState,db,tcm_tmp_nextState,"3","4");
                 TableColumn tcm2 = table_5.getColumnModel().getColumn(order_name2.size()-1);
                 boolean_button.boolean_button(table_5,data_tmp,order_name2.size()-1,tablemodel_tmp,db,tcm2,"4","3");
-//                tcm2.setCellEditor(table_5.getDefaultEditor(Boolean.class));
-//                tcm2.setCellRenderer(table_5.getDefaultRenderer(Boolean.class));
-//                tablemodel_tmp.addTableModelListener(new TableModelListener() {
-//                    @Override
-//                    public void tableChanged(TableModelEvent e) {
-//                        if(e.getColumn()==order_name2.size()-1){
-//                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
-//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-//                                        ,"ordermanager","ID","4","State");
-//                            else
-//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-//                                        ,"ordermanager","ID","3","State");
-//                        }
-//
-//                    }
-//                });
+
+                Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",order_name);
+                DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, order_name);
+                table_8 = new JTable();
+                table_8.setModel(tablemodel_8);
+                scrollPane_8.setViewportView(table_8);
             }
         });
         panel_8.add(btnNewButton_5, BorderLayout.SOUTH);
@@ -460,21 +401,6 @@ public class mainGUI extends JFrame {
         scrollPane_6.setViewportView(table_6);
         TableColumn tcm4 = table_6.getColumnModel().getColumn(order_name2.size()-1);
         boolean_button.boolean_button(table_6,data_6,order_name2.size()-1,tablemodel_6,db,tcm4,"3","4");
-//        tcm4.setCellEditor(table_6.getDefaultEditor(Boolean.class));
-//        tcm4.setCellRenderer(table_6.getDefaultRenderer(Boolean.class));
-//        tablemodel_6.addTableModelListener(new TableModelListener() {
-//            @Override
-//            public void tableChanged(TableModelEvent e) {
-//                if(e.getColumn()==order_name2.size()-1){
-//                    if((Boolean) data_6.get(e.getFirstRow()).get(order_name2.size()-1))
-//                        db.executeUpdate((String)(data_6.get(e.getFirstRow()).get(0))
-//                                ,"ordermanager","ID","3","State");
-//                    else
-//                        db.executeUpdate((String)(data_6.get(e.getFirstRow()).get(0))
-//                                ,"ordermanager","ID","4","State");
-//                }
-//            }
-//        });
         JButton btnNewButton_6 = new JButton("确认");
         btnNewButton_6.addActionListener(new ActionListener() {
             @Override
@@ -485,24 +411,16 @@ public class mainGUI extends JFrame {
                 Vector<Vector<Object>> data_tmp_nextState = returnVector.FromDBRead(db, "ordermanager", order_name, "3", "State");
                 DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, order_name2);
                 table_5.setModel(tablemodel_tmp_nextState);
+                TableColumn tcm_tmp_nextState = table_5.getColumnModel().getColumn(order_name2.size()-1);
+                boolean_button.boolean_button(table_5, data_tmp_nextState,order_name2.size()-1,tablemodel_tmp_nextState,db,tcm_tmp_nextState,"4","3");
                 TableColumn tcm2 = table_6.getColumnModel().getColumn(order_name2.size()-1);
                 boolean_button.boolean_button(table_6,data_tmp,order_name2.size()-1,tablemodel_tmp,db,tcm2,"3","4");
-//                tcm2.setCellEditor(table_6.getDefaultEditor(Boolean.class));
-//                tcm2.setCellRenderer(table_6.getDefaultRenderer(Boolean.class));
-//                tablemodel_tmp.addTableModelListener(new TableModelListener() {
-//                    @Override
-//                    public void tableChanged(TableModelEvent e) {
-//                        if(e.getColumn()==order_name2.size()-1){
-//                            if((Boolean) data_tmp.get(e.getFirstRow()).get(order_name2.size()-1))
-//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-//                                        ,"ordermanager","ID","3","State");
-//                            else
-//                                db.executeUpdate((String)(data_tmp.get(e.getFirstRow()).get(0))
-//                                        ,"ordermanager","ID","4","State");
-//                        }
-//
-//                    }
-//                });
+
+                Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",order_name);
+                DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, order_name);
+                table_8 = new JTable();
+                table_8.setModel(tablemodel_8);
+                scrollPane_8.setViewportView(table_8);
             }
         });
         panel_12.add(btnNewButton_6, BorderLayout.SOUTH);
@@ -511,7 +429,6 @@ public class mainGUI extends JFrame {
         JPanel panel_4 = new JPanel();
         tabbedPane_1.addTab("订单列表", null, panel_4, null);
         panel_4.setLayout(new BorderLayout(0, 0));
-        JScrollPane scrollPane_8 = new JScrollPane();
         panel_4.add(scrollPane_8, BorderLayout.CENTER);
         Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",order_name);
         DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, order_name);
@@ -546,7 +463,8 @@ public class mainGUI extends JFrame {
         btnDel.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                db.executeDelete(textField_3.getText(), );
+                db.executeDelete(textField_3.getText(), "ordermanager", "ID");
+                // TODO 删除了之后。相关的table没有更新。删除成功的弹窗
             }
         });
 
