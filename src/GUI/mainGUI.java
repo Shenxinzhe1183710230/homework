@@ -2,7 +2,6 @@ package GUI;
 
 import Bean.DBBean;
 import op.*;
-
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableModel;
@@ -12,9 +11,10 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Vector;
 
-public class mainGUI extends JFrame {
+public class mainGUI extends JFrame{
     private JPanel contentPane;
     private JTable table_product;
     private JTable table_allClient;
@@ -35,6 +35,11 @@ public class mainGUI extends JFrame {
     private JTextField textField_allOrder_totalProfit;
     private JScrollPane scrollPane_allOrder = new JScrollPane();
     private JScrollPane scrollPane_unchecked = new JScrollPane();
+    JScrollPane scrollPane_unpaid;
+    JScrollPane scrollPane_finish;
+    JScrollPane scrollPane_return;
+    JScrollPane scrollPane_returned;
+    JScrollPane scrollPane_checkStock;
     private DBBean db=new DBBean();
     Vector<Object> name_checkStock = new Vector<>();
 
@@ -58,7 +63,7 @@ public class mainGUI extends JFrame {
      * Create the frame.
      * @throws SQLException
      */
-    public mainGUI() throws SQLException {
+    public mainGUI() throws SQLException{
         // 设置总面板属性
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setBounds(100, 100, 794, 510);
@@ -159,7 +164,6 @@ public class mainGUI extends JFrame {
         box_makeSellOrders_up.add(label_makeSellOrders_findres);
         // 查找到的客户 客户名的打印的textfield
         textField_makeSellOrders_findres = new JTextField();
-        textField_makeSellOrders_findres.setEnabled(false);
         textField_makeSellOrders_findres.setEditable(false);
         box_makeSellOrders_up.add(textField_makeSellOrders_findres);
         textField_makeSellOrders_findres.setColumns(10);
@@ -240,19 +244,8 @@ public class mainGUI extends JFrame {
                 data_makeSellOrders_items.clear();
                 table_makeSellOrders_items.setModel(new DefaultTableModel(data_makeSellOrders_items, name_makeSellOrders_items));
                 textField_makeSellOrders_total.setText("");
-                // 待审核刷新
-                Vector<Vector<Object>> data_3 = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "1", "State");
-                DefaultTableModel tablemodel_3 = new DefaultTableModel(data_3, name_sell_haveStateChaneg);
-                table_unchecked = new JTable();
-                table_unchecked.setModel(tablemodel_3);
-                scrollPane_unchecked.setViewportView(table_unchecked);
-
-                // 订单列表刷新
-                Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",name_sell_noStateChange);
-                DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, name_sell_noStateChange);
-                table_allOrder = new JTable();
-                table_allOrder.setModel(tablemodel_8);
-                scrollPane_allOrder.setViewportView(table_allOrder);
+                new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
+                                            scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
             }
         });
 
@@ -285,27 +278,8 @@ public class mainGUI extends JFrame {
         button_unchecked_check.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-//                db.executeUpdate();
-
-                Vector<Vector<Object>> data_tmp = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "1", "State");
-                DefaultTableModel tablemodel_tmp = new DefaultTableModel(data_tmp, name_sell_haveStateChaneg);
-                table_unchecked.setModel(tablemodel_tmp);
-                Vector<Vector<Object>> data_tmp_nextState = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "2", "State");
-                DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, name_sell_haveStateChaneg);
-                table_unpaid.setModel(tablemodel_tmp_nextState);
-                // flag
-                TableColumn tcm_tmp_nextState = table_unpaid.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-                boolean_button.boolean_button(table_unpaid, data_tmp_nextState,name_sell_haveStateChaneg.size()-1,tablemodel_tmp_nextState,db,tcm_tmp_nextState,"3","2");
-
-                TableColumn tcm = table_unchecked.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-                boolean_button.boolean_button(table_unchecked,data_tmp,name_sell_haveStateChaneg.size()-1,tablemodel_tmp,db,tcm,"2","1");
-
-                Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",name_sell_noStateChange);
-                DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, name_sell_noStateChange);
-                table_allOrder = new JTable();
-                table_allOrder.setModel(tablemodel_8);
-                scrollPane_allOrder.setViewportView(table_allOrder);
-
+                new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
+                        scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
             }
         });
         panel_unchecked.add(button_unchecked_check, BorderLayout.SOUTH);
@@ -315,7 +289,7 @@ public class mainGUI extends JFrame {
         JPanel panel_unpaid = new JPanel();
         tabbedPane_sell.addTab("待收款", null, panel_unpaid, null);
         panel_unpaid.setLayout(new BorderLayout(0, 0));
-        JScrollPane scrollPane_unpaid = new JScrollPane();
+        scrollPane_unpaid = new JScrollPane();
         panel_unpaid.add(scrollPane_unpaid, BorderLayout.CENTER);
         Vector<Vector<Object>> data_unpaid = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "2", "State");
         DefaultTableModel model_unpaid = new DefaultTableModel(data_unpaid, name_sell_haveStateChaneg);
@@ -328,24 +302,8 @@ public class mainGUI extends JFrame {
         button_unpaid_check.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Vector<Vector<Object>> data_tmp = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "2", "State");
-                DefaultTableModel tablemodel_tmp = new DefaultTableModel(data_tmp, name_sell_haveStateChaneg);
-                table_unpaid.setModel(tablemodel_tmp);
-                Vector<Vector<Object>> data_tmp_nextState = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "3", "State");
-                DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, name_sell_haveStateChaneg);
-                table_finish.setModel(tablemodel_tmp_nextState);
-                // flag
-                TableColumn tcm_tmp_nextState = table_finish.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-                boolean_button.boolean_button(table_finish, data_tmp_nextState,name_sell_haveStateChaneg.size()-1,tablemodel_tmp_nextState,db,tcm_tmp_nextState,"4","3");
-
-                TableColumn tcm2 = table_unpaid.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-                boolean_button.boolean_button(table_unpaid,data_tmp,name_sell_haveStateChaneg.size()-1,tablemodel_tmp,db,tcm2,"3","2");
-
-                Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",name_sell_noStateChange);
-                DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, name_sell_noStateChange);
-                table_allOrder = new JTable();
-                table_allOrder.setModel(tablemodel_8);
-                scrollPane_allOrder.setViewportView(table_allOrder);
+                new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
+                        scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
             }
         });
         panel_unpaid.add(button_unpaid_check, BorderLayout.SOUTH);
@@ -354,7 +312,7 @@ public class mainGUI extends JFrame {
         JPanel panel_finish = new JPanel();
         tabbedPane_sell.addTab("已完成", null, panel_finish, null);
         panel_finish.setLayout(new BorderLayout(0, 0));
-        JScrollPane scrollPane_finish = new JScrollPane();
+        scrollPane_finish = new JScrollPane();
         panel_finish.add(scrollPane_finish, BorderLayout.CENTER);
         Vector<Vector<Object>> data_finish = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "3", "State");
         DefaultTableModel model_finish = new DefaultTableModel(data_finish, name_sell_haveStateChaneg);
@@ -367,22 +325,8 @@ public class mainGUI extends JFrame {
         button_finish_check.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Vector<Vector<Object>> data_tmp = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "3", "State");
-                DefaultTableModel tablemodel_tmp = new DefaultTableModel(data_tmp, name_sell_haveStateChaneg);
-                table_finish.setModel(tablemodel_tmp);
-                Vector<Vector<Object>> data_tmp_nextState = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "4", "State");
-                DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, name_sell_haveStateChaneg);
-                table_return.setModel(tablemodel_tmp_nextState);
-                TableColumn tcm_tmp_nextState = table_return.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-                boolean_button.boolean_button(table_return, data_tmp_nextState,name_sell_haveStateChaneg.size()-1,tablemodel_tmp_nextState,db,tcm_tmp_nextState,"5","4");
-                TableColumn tcm2 = table_finish.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-                boolean_button.boolean_button(table_finish,data_tmp,name_sell_haveStateChaneg.size()-1,tablemodel_tmp,db,tcm2,"4","3");
-                // 修改所有订单
-                Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",name_sell_noStateChange);
-                DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, name_sell_noStateChange);
-                table_allOrder = new JTable();
-                table_allOrder.setModel(tablemodel_8);
-                scrollPane_allOrder.setViewportView(table_allOrder);
+                new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
+                        scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
             }
         });
         panel_finish.add(button_finish_check, BorderLayout.SOUTH);
@@ -392,7 +336,7 @@ public class mainGUI extends JFrame {
         JPanel panel_return = new JPanel();
         tabbedPane_sell.addTab("退货中", null, panel_return, null);
         panel_return.setLayout(new BorderLayout(0, 0));
-        JScrollPane scrollPane_return = new JScrollPane();
+        scrollPane_return = new JScrollPane();
         panel_return.add(scrollPane_return, BorderLayout.CENTER);
         Vector<Vector<Object>> data_return = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "4", "State");
         DefaultTableModel model_return = new DefaultTableModel(data_return, name_sell_haveStateChaneg);
@@ -406,21 +350,8 @@ public class mainGUI extends JFrame {
         button_return_check.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Vector<Vector<Object>> data_tmp = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "4", "State");
-                DefaultTableModel tablemodel_tmp = new DefaultTableModel(data_tmp, name_sell_haveStateChaneg);
-                table_return.setModel(tablemodel_tmp);
-                Vector<Vector<Object>> data_tmp_nextState = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "5", "State");
-                DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, name_sell_noStateChange);
-                table_returned.setModel(tablemodel_tmp_nextState);
-
-                TableColumn tcm2 = table_return.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-                boolean_button.boolean_button(table_return,data_tmp,name_sell_haveStateChaneg.size()-1,tablemodel_tmp,db,tcm2,"4","3");
-                // 更新所有列表
-                Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",name_sell_noStateChange);
-                DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, name_sell_noStateChange);
-                table_allOrder = new JTable();
-                table_allOrder.setModel(tablemodel_8);
-                scrollPane_allOrder.setViewportView(table_allOrder);
+                new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
+                        scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
             }
         });
         panel_return.add(button_return_check, BorderLayout.SOUTH);
@@ -432,39 +363,14 @@ public class mainGUI extends JFrame {
         JPanel panel_returned = new JPanel();
         tabbedPane_sell.addTab("已退货", null, panel_returned, null);
         panel_returned.setLayout(new BorderLayout(0, 0));
-        JScrollPane scrollPane_returned = new JScrollPane();
+        scrollPane_returned = new JScrollPane();
         panel_returned.add(scrollPane_returned, BorderLayout.CENTER);
         Vector<Vector<Object>> data_returned = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "5", "State");
         DefaultTableModel model_returned = new DefaultTableModel(data_returned, name_sell_noStateChange);
         table_returned = new JTable();
         table_returned.setModel(model_returned);
         scrollPane_returned.setViewportView(table_returned);
-        /*
-        JButton button_returned_check = new JButton("确认");
-        button_returned_check.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                // todo 改一下状态转移
-                Vector<Vector<Object>> data_tmp = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "4", "State");
-                DefaultTableModel tablemodel_tmp = new DefaultTableModel(data_tmp, name_sell_haveStateChaneg);
-                table_finish.setModel(tablemodel_tmp);
-                Vector<Vector<Object>> data_tmp_nextState = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "3", "State");
-                DefaultTableModel tablemodel_tmp_nextState = new DefaultTableModel(data_tmp_nextState, name_sell_haveStateChaneg);
-                table_return.setModel(tablemodel_tmp_nextState);
-                TableColumn tcm_tmp_nextState = table_return.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-                boolean_button.boolean_button(table_return, data_tmp_nextState,name_sell_haveStateChaneg.size()-1,tablemodel_tmp_nextState,db,tcm_tmp_nextState,"4","3");
-                TableColumn tcm2 = table_finish.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-                boolean_button.boolean_button(table_finish,data_tmp,name_sell_haveStateChaneg.size()-1,tablemodel_tmp,db,tcm2,"3","4");
 
-                Vector<Vector<Object>> data_8 = returnVector.FromDBReadAll(db,"ordermanager",name_sell_noStateChange);
-                DefaultTableModel tablemodel_8 = new DefaultTableModel(data_8, name_sell_noStateChange);
-                table_allOrder = new JTable();
-                table_allOrder.setModel(tablemodel_8);
-                scrollPane_allOrder.setViewportView(table_allOrder);
-            }
-        });
-        panel_returned.add(button_returned_check, BorderLayout.SOUTH);
-*/
         //------------------订单列表---------------------------------------
         JPanel panel_allOrder = new JPanel();
         tabbedPane_sell.addTab("订单列表", null, panel_allOrder, null);
@@ -510,8 +416,18 @@ public class mainGUI extends JFrame {
         button_allOrder_delete.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                db.executeDelete(textField_allOrder_inputOrderID.getText(), "ordermanager", "ID");
-                // TODO 删除了之后。相关的table没有更新。删除成功的弹窗
+                int flag=db.executeDelete(textField_allOrder_inputOrderID.getText(), "ordermanager", "ID");
+                JTextArea aboutarea_delete = new JTextArea();
+                if (flag==0){
+                    aboutarea_delete.setText("找不到用户，无法删除！\n");
+                }else{
+                    new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
+                            scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
+                    aboutarea_delete.setText("删除成功！\n");
+                    textField_allOrder_inputOrderID.setText("");
+                }
+                JOptionPane.showConfirmDialog(null,aboutarea_delete,"Error!",JOptionPane.PLAIN_MESSAGE);
+                // TODO 删除了之后。删除成功的弹窗
             }
         });
 
@@ -588,10 +504,8 @@ public class mainGUI extends JFrame {
                     db.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)",
                             "'"+temp.get(0)+"','"+temp.get(1)+"','" + temp.get(2) +"','"+temp.get(3)+"'");
                 }
-                Vector<Vector<Object>> data_10 = returnVector.FromDBReadAll(db,"itemmanager",name_checkStock);
-                DefaultTableModel tablemodel_10 = new DefaultTableModel(data_10, name_checkStock);
-                table_checkStock.setModel(tablemodel_10);
-                table_inStock_addProduct.setModel(new DefaultTableModel(new Vector<Vector<Object>>(), name_inStock_addProduct));
+                new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
+                        scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
                 textField_inStock_totalProfit.setText("");
             }
         });
@@ -626,19 +540,14 @@ public class mainGUI extends JFrame {
             }
         });
 
-
         // -----------------------清点-----------------------------------------
         JPanel panel_checkStock = new JPanel();
         tabbedPane_stock.addTab("清点库存(checkStock)", null, panel_checkStock, null);
         panel_checkStock.setLayout(new BorderLayout(0, 0));
-        JScrollPane scrollPane_checkStock = new JScrollPane();
+        scrollPane_checkStock = new JScrollPane();
         panel_checkStock.add(scrollPane_checkStock, BorderLayout.CENTER);
 
-        name_checkStock = new Vector<>();
-        name_checkStock.add("id");
-        name_checkStock.add("name");
-        name_checkStock.add("num");
-        name_checkStock.add("inprice");
+        name_checkStock = new Vector<>(Arrays.asList("id", "name", "num", "inprice"));
         Vector<Vector<Object>> data_checkStock = returnVector.FromDBReadAll(db,"itemmanager",name_checkStock);
         DefaultTableModel tablemodel_checkStock = new DefaultTableModel(data_checkStock, name_checkStock);
         table_checkStock = new JTable();

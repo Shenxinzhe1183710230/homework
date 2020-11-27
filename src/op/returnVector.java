@@ -80,7 +80,7 @@ public class returnVector {
      * @return      返回表的所有列的字段名
      * @throws SQLException
      */
-    public static Vector<Object> getHeadName(DBBean db, String tablename) throws SQLException {
+    public static Vector<Object> getHeadName(DBBean db, String tablename){
         ResultSet temp1=db.executeTablehead(tablename);
         Vector<Object> v1 = new Vector<Object>();
         while (true) {

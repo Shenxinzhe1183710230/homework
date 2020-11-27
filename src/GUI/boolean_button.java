@@ -7,6 +7,8 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.Vector;
 
 public class boolean_button {
@@ -34,6 +36,7 @@ public class boolean_button {
                     if((Boolean) data.get(e.getFirstRow()).get(size)) {
                         db.executeUpdate((String) (data.get(e.getFirstRow()).get(0))
                                 , "ordermanager", "ID", nextstate, "State");
+                        update_itemnum(data.get(e.getFirstRow()), db);
 //                        db.executeUpdate((String) (data.get(e.getFirstRow()).get(0))
 //                                , "ordermanager", "ID", nextstate, "");
                     }
@@ -44,4 +47,31 @@ public class boolean_button {
             }
         });
     }
+
+    public static void update_itemnum(Vector<Object> x,DBBean db){
+        System.out.println("kkkkkkkk"+"仓库数量已更新");
+        String items=(String) x.get(1);
+        String tmp1[]=items.split("<|>");
+        for(String x1:tmp1) {
+            if(!x1.equals("")) {
+                String tmp2[]=x1.split(",");
+                try {
+                    int outnum= Integer.valueOf(tmp2[1]);
+                    System.out.println(tmp2[0]+"仓库数量已更新");
+                    ResultSet tmp=db.executeFind(tmp2[0],"itemmanager","name");
+                    tmp.next();
+                    String s=String.valueOf(tmp.getObject("num"));
+                    String newnum=String.valueOf(Integer.valueOf(s)-outnum);
+                    tmp2[0]="'"+tmp2[0]+"'";
+                    db.executeUpdate(tmp2[0],"itemmanager","name",newnum,"num");
+
+                } catch (SQLException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
 }
+
+
