@@ -59,7 +59,7 @@ public class op {
         float sum = 0;
         ResultSet tmp;
         for (Vector<Object> x : orderdata) {
-            if (x.get(4).equals("3")) {
+            if (x.get(4).equals("已完成")) {
                 String items = (String) x.get(1);
                 String tmp1[] = items.split("<|>");
                 float inPriceAll = 0;

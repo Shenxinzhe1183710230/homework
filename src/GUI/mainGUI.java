@@ -187,7 +187,7 @@ public class mainGUI extends JFrame{
                 }
             }
         });
-        // 底部按钮所在的panel todo
+        // 底部按钮所在的panel
         JPanel panel_makeSellOrders_down = new JPanel();
         panel_makeSellOrders.add(panel_makeSellOrders_down, BorderLayout.SOUTH);
         panel_makeSellOrders_down.setLayout(new BorderLayout(0, 0));
@@ -391,7 +391,6 @@ public class mainGUI extends JFrame{
         textField_allOrder_inputOrderID = new JTextField();
         box_allOrder.add(textField_allOrder_inputOrderID);
         textField_allOrder_inputOrderID.setColumns(10);
-
         // 销售->订单列表->功能按钮部分->查询按钮
         JButton button_allOrder_findOrder = new JButton("查 询");
         button_allOrder_findOrder.addActionListener(new ActionListener() {
@@ -405,10 +404,10 @@ public class mainGUI extends JFrame{
                     temp = new DefaultTableModel_noEditable(returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, textField_allOrder_inputOrderID.getText(), "ID"), name_sell_noStateChange, 5);
                 }
                 table_allOrder.setModel(temp);
+                scrollPanel_allOrder.setViewportView(table_allOrder);
             }
         });
         box_allOrder.add(button_allOrder_findOrder);
-        // TODO 修改按钮
         // 销售->订单列表->功能按钮部分->删除按钮
         JButton button_allOrder_delete = new JButton("删 除");
         box_allOrder.add(button_allOrder_delete);
@@ -442,6 +441,7 @@ public class mainGUI extends JFrame{
 
         // 销售->订单列表->总利润部分->总利润显示的textfield
         textField_allOrder_totalProfit = new JTextField();
+        textField_allOrder_totalProfit.setText(op.TotalProfit(data_allOrder,db));
         textField_allOrder_totalProfit.setHorizontalAlignment(SwingConstants.RIGHT);
         textField_allOrder_totalProfit.setEditable(false);
         textField_allOrder_totalProfit.setEnabled(false);
@@ -499,8 +499,20 @@ public class mainGUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 for (Vector<Object> temp : data_inStock_addProduct){
-                    db.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)",
-                            "'"+temp.get(0)+"','"+temp.get(1)+"','" + temp.get(2) +"','"+temp.get(3)+"'");
+                    ResultSet tmp=db.executeFind(String.valueOf(temp.get(0)),"itemmanager","name");
+                    try {
+                        if(tmp.next()){
+                            String xstring="'"+String.valueOf(temp.get(0))+"'";
+                            int oldNum=Integer.parseInt(String.valueOf(tmp.getObject("num")));
+                            int newNum=oldNum+Integer.parseInt(String.valueOf(temp.get(2)));
+                            db.executeUpdate(xstring,"itemmanager","name",String.valueOf(newNum),"num");
+                        }else {
+                            db.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)",
+                                    "'"+temp.get(0)+"','"+temp.get(1)+"','" + temp.get(2) +"','"+temp.get(3)+"'");
+                        }
+                    } catch (SQLException throwables) {
+                        throwables.printStackTrace();
+                    }
                 }
                 data_inStock_addProduct.clear();
                 DefaultTableModel tablemodel_inStock_addProduct = new DefaultTableModel_noEditable(data_inStock_addProduct, name_inStock_addProduct, 4);
@@ -554,5 +566,85 @@ public class mainGUI extends JFrame{
         table_checkStock = new JTable();
         table_checkStock.setModel(tablemodel_checkStock);
         scrollPanel_checkStock.setViewportView(table_checkStock);
+
+        //库存查询及其删除
+        Box horizontalBox_4 = Box.createHorizontalBox();
+        panel_checkStock.add(horizontalBox_4, BorderLayout.NORTH);
+
+        JLabel label_storkCheck_goodsName = new JLabel("  货品名称：");
+        horizontalBox_4.add(label_storkCheck_goodsName);
+
+        JTextField textField_stockCheck_stockNameInput = new JTextField();
+        horizontalBox_4.add(textField_stockCheck_stockNameInput);
+        textField_stockCheck_stockNameInput.setColumns(10);
+
+        JButton Button_stockCheck_search = new JButton("查 询");
+        horizontalBox_4.add(Button_stockCheck_search);
+        Button_stockCheck_search.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                DefaultTableModel temp;
+                if (textField_stockCheck_stockNameInput.getText().equals("")){
+                    temp = new DefaultTableModel_noEditable(returnVector.FromDBReadAll(db,"itemmanager",name_checkStock), name_checkStock, 5);
+                }
+                else {
+                    temp = new DefaultTableModel_noEditable(returnVector.FromDBRead(db, "itemmanager", name_checkStock, textField_stockCheck_stockNameInput.getText(), "name"), name_checkStock, 5);
+                }
+                table_checkStock.setModel(temp);
+                scrollPanel_checkStock.setViewportView(table_checkStock);
+            }
+
+        });
+
+        JButton Button_stockCheck_change = new JButton("修 改");
+        horizontalBox_4.add(Button_stockCheck_change);
+        Button_stockCheck_change.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // TODO Auto-generated method stub
+                ResultSet findres = db.executeFind(textField_stockCheck_stockNameInput.getText(), "itemmanager", "name");
+                try {
+                    if (findres.next()){
+                        windowsToChangeStockValue window_2 = new windowsToChangeStockValue(db, scrollPanel_checkStock, db.executeFind(textField_stockCheck_stockNameInput.getText(), "itemmanager", "name"));
+                        window_2.setVisible(true);
+                        window_2.setSize(400, 400);
+                    }
+                    else {
+                        JTextArea aboutarea = new JTextArea();
+                        aboutarea.setText("找不到该物品！\n");
+                        JOptionPane.showConfirmDialog(null,aboutarea,"Error!",JOptionPane.PLAIN_MESSAGE);
+                    }
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+
+        });
+
+        JButton Button_stockCheck_delete = new JButton("删 除");
+        horizontalBox_4.add(Button_stockCheck_delete);
+        Button_stockCheck_delete.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int flag=db.executeDelete(textField_stockCheck_stockNameInput.getText(), "itemmanager", "name");
+                JTextArea aboutarea_delete = new JTextArea();
+                if (flag==0){
+                    aboutarea_delete.setText("找不到货品，无法删除！\n");
+                }else{
+                    new flush(db).flushAllTables(scrollPanel_unchecked, scrollPanel_unpaid, scrollPanel_return, scrollPanel_finish,
+                            scrollPanel_allOrder, scrollPanel_checkStock, scrollPanel_returned);
+                    aboutarea_delete.setText("删除成功！\n");
+                    textField_stockCheck_stockNameInput.setText("");
+                }
+                JOptionPane.showConfirmDialog(null,aboutarea_delete,"Error!",JOptionPane.PLAIN_MESSAGE);
+
+            }
+
+        });
+
+
     }
 }
