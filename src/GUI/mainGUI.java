@@ -603,7 +603,6 @@ public class mainGUI extends JFrame{
 
             @Override
             public void actionPerformed(ActionEvent e) {
-                // TODO Auto-generated method stub
                 ResultSet findres = db.executeFind(textField_stockCheck_stockNameInput.getText(), "itemmanager", "name");
                 try {
                     if (findres.next()){
