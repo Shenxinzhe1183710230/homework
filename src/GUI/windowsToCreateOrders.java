@@ -126,7 +126,7 @@ public class windowsToCreateOrders extends JFrame{
 				temp.add(textField.getText()); temp.add(goodsPriceDisplay.getText());
 				temp.add(textField_1.getText()); temp.add(totalMoneyDisplay.getText());
 				data.add(temp);
-				table.setModel(new DefaultTableModel(data, name));
+				table.setModel(new DefaultTableModel_noEditable(data, name, 5));
 				a.setVisible(false);
 				out.setText(String.valueOf(op.caculateAllPrice(data)));
 			}

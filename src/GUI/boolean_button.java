@@ -25,7 +25,7 @@ public class boolean_button {
      * @see java.awt.Component#contains
      */
     public static void boolean_button(JTable table, Vector<Vector<Object>> data, int size, DefaultTableModel tablemodel
-            , DBBean db,TableColumn tcm,String nextstate,String nowstate){
+            , DBBean db,TableColumn tcm,String nextstate,String nowstate,int flag){
 //        TableColumn tcm4 = table.getColumnModel().getColumn(size-1);
         tcm.setCellEditor(table.getDefaultEditor(Boolean.class));
         tcm.setCellRenderer(table.getDefaultRenderer(Boolean.class));
@@ -34,21 +34,29 @@ public class boolean_button {
             public void tableChanged(TableModelEvent e) {
                 if(e.getColumn()==size){
                     if((Boolean) data.get(e.getFirstRow()).get(size)) {
-                        db.executeUpdate((String) (data.get(e.getFirstRow()).get(0))
-                                , "ordermanager", "ID", nextstate, "State");
-                        update_itemnum(data.get(e.getFirstRow()), db);
-//                        db.executeUpdate((String) (data.get(e.getFirstRow()).get(0))
-//                                , "ordermanager", "ID", nextstate, "");
+                        boolean outflow=true;
+                        if(flag==1){
+                            outflow=update_itemnum(data.get(e.getFirstRow()), db,1);
+                            data.get(e.getFirstRow()).set(size,outflow);
+                        }
+                        if(outflow)
+                            db.executeUpdate((String) (data.get(e.getFirstRow()).get(0))
+                                    , "ordermanager", "ID", nextstate, "State");
+
                     }
-                    else
+                    else{
                         db.executeUpdate((String)(data.get(e.getFirstRow()).get(0))
                                 ,"ordermanager","ID",nowstate,"State");
+                        if(flag==1)
+                            update_itemnum(data.get(e.getFirstRow()), db,0);
+                    }
+
                 }
             }
         });
     }
 
-    public static void update_itemnum(Vector<Object> x,DBBean db){
+    public static boolean update_itemnum(Vector<Object> x,DBBean db,int i){
         System.out.println("kkkkkkkk"+"仓库数量已更新");
         String items=(String) x.get(1);
         String tmp1[]=items.split("<|>");
@@ -61,7 +69,17 @@ public class boolean_button {
                     ResultSet tmp=db.executeFind(tmp2[0],"itemmanager","name");
                     tmp.next();
                     String s=String.valueOf(tmp.getObject("num"));
-                    String newnum=String.valueOf(Integer.valueOf(s)-outnum);
+                    int new_num;
+                    if(i==1)
+                        new_num=Integer.valueOf(s)-outnum;
+                    else new_num=Integer.valueOf(s)+outnum;
+                    if(new_num<0){
+                        JTextArea warningarea = new JTextArea();
+                        warningarea.setText("内存数量不够！\n");
+                        JOptionPane.showConfirmDialog(null,warningarea,"Error!",JOptionPane.PLAIN_MESSAGE);
+                        return false;
+                    }
+                    String newnum=String.valueOf(new_num);
                     tmp2[0]="'"+tmp2[0]+"'";
                     db.executeUpdate(tmp2[0],"itemmanager","name",newnum,"num");
 
@@ -71,7 +89,9 @@ public class boolean_button {
                 }
             }
         }
+        return true;
     }
+
 }
 
 

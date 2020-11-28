@@ -64,7 +64,7 @@ public class windowsToCreateCustomer extends JFrame {
                     Vector<Object> name_1 = null;
                     name_1 = returnVector.getHeadName(db, "customermanager");
                     Vector<Vector<Object>> data_1 = returnVector.FromDBReadAll(db, "customermanager", name_1);
-                    DefaultTableModel temp = new DefaultTableModel(data_1, name_1);
+                    DefaultTableModel temp = new DefaultTableModel_noEditable(data_1, name_1, 5);
                     table.setModel(temp);
                     a.setVisible(false);
                 }

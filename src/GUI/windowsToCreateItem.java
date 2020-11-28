@@ -75,14 +75,12 @@ public class windowsToCreateItem extends JFrame{
 					JOptionPane.showConfirmDialog(null,aboutarea,"Error!",JOptionPane.PLAIN_MESSAGE);
 				}
 				else {
-					//db.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)",
-					//		"'"+textField.getText()+"','"+textField_2.getText()+"','" + textField_3.getText() +"','"+textField_1.getText()+"'");
 					Vector<Object> temp = new Vector<>();
 					temp.add(textField.getText()); temp.add(textField_2.getText());
 					temp.add(textField_1.getText());
 					temp.add(String.valueOf(Float.parseFloat(textField_2.getText()) * Float.parseFloat(textField_1.getText())));
 					data.add(temp);
-					table.setModel(new DefaultTableModel(data, name));
+					table.setModel(new DefaultTableModel_noEditable(data, name, 5));
 					a.setVisible(false);
 					out.setText(String.valueOf(op.caculateAllPrice(data)));
 				}

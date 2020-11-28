@@ -33,13 +33,13 @@ public class mainGUI extends JFrame{
     private JTextField textField_inStock_totalProfit;
     private JTextField textField_allOrder_inputOrderID;
     private JTextField textField_allOrder_totalProfit;
-    private JScrollPane scrollPane_allOrder = new JScrollPane();
-    private JScrollPane scrollPane_unchecked = new JScrollPane();
-    JScrollPane scrollPane_unpaid;
-    JScrollPane scrollPane_finish;
-    JScrollPane scrollPane_return;
-    JScrollPane scrollPane_returned;
-    JScrollPane scrollPane_checkStock;
+    private JScrollPane scrollPanel_allOrder = new JScrollPane();
+    private JScrollPane scrollPanel_unchecked = new JScrollPane();
+    JScrollPane scrollPanel_unpaid;
+    JScrollPane scrollPanel_finish;
+    JScrollPane scrollPanel_return;
+    JScrollPane scrollPanel_returned;
+    JScrollPane scrollPanel_checkStock;
     private DBBean db=new DBBean();
     Vector<Object> name_checkStock = new Vector<>();
 
@@ -87,9 +87,8 @@ public class mainGUI extends JFrame{
         name_product.add("name");
         name_product.add("outprice");
         Vector<Vector<Object>> data_product = returnVector.FromDBReadAll(db,"itemmanager",name_product);
-        DefaultTableModel tablemodel_product = new DefaultTableModel(data_product, name_product);
+        DefaultTableModel tablemodel_product = new DefaultTableModel_noEditable(data_product, name_product, 3);
         table_product = new JTable();
-        table_product.setEnabled(false);
         table_product.setModel(tablemodel_product);
         scrollPane_product.setViewportView(table_product);
 
@@ -118,7 +117,7 @@ public class mainGUI extends JFrame{
         panel_client.add(scrollPane_allClient, BorderLayout.CENTER);
         Vector<Object> name_Of_AllClientTable = returnVector.getHeadName(db,"customermanager");
         Vector<Vector<Object>> data_Of_AllClientTable = returnVector.FromDBReadAll(db,"customermanager",name_Of_AllClientTable);
-        DefaultTableModel tablemodel_AllClient = new DefaultTableModel(data_Of_AllClientTable, name_Of_AllClientTable);
+        DefaultTableModel tablemodel_AllClient = new DefaultTableModel_noEditable(data_Of_AllClientTable, name_Of_AllClientTable,3);
         table_allClient = new JTable();
         table_allClient.setModel(tablemodel_AllClient);
         scrollPane_allClient.setViewportView(table_allClient);
@@ -139,14 +138,14 @@ public class mainGUI extends JFrame{
 
         //------------------开销售单---------------------------------------
         JPanel panel_makeSellOrders = new JPanel();
-        tabbedPane_sell.addTab("开销售单(makeSellOrders)", null, panel_makeSellOrders, null);
+        tabbedPane_sell.addTab("开销售单", null, panel_makeSellOrders, null);
         panel_makeSellOrders.setLayout(new BorderLayout(0, 0));
         // 顶部二级容器
         Box box_makeSellOrders_up = Box.createHorizontalBox();
         panel_makeSellOrders.add(box_makeSellOrders_up, BorderLayout.NORTH);
         // 客户确认按钮  显示的label
-        JLabel lblNewLabel_makeSellOrders_clientConfirm = new JLabel("确认");
-        box_makeSellOrders_up.add(lblNewLabel_makeSellOrders_clientConfirm);
+        JLabel Label_makeSellOrders_clientConfirm = new JLabel("确认");
+        box_makeSellOrders_up.add(Label_makeSellOrders_clientConfirm);
         // 客户确认按钮  输入客户编号的文本框，通过姓名查
         textField_makeSellOrders_inputClientName = new JTextField();
         textField_makeSellOrders_inputClientName.setText("input name");
@@ -224,7 +223,7 @@ public class mainGUI extends JFrame{
         Vector<Object> name_makeSellOrders_items = new Vector<Object>();
         name_makeSellOrders_items.add("name"); name_makeSellOrders_items.add("price/one"); name_makeSellOrders_items.add("num"); name_makeSellOrders_items.add("price/all");
         Vector<Vector<Object>> data_makeSellOrders_items = new Vector<>();
-        DefaultTableModel model_makeSellOrders_items = new DefaultTableModel(data_makeSellOrders_items, name_makeSellOrders_items);
+        DefaultTableModel model_makeSellOrders_items = new DefaultTableModel_noEditable(data_makeSellOrders_items, name_makeSellOrders_items, 3);
         table_makeSellOrders_items = new JTable();
         table_makeSellOrders_items.setModel(model_makeSellOrders_items);
         scrollPane_makeSellOrders_items.setViewportView(table_makeSellOrders_items);
@@ -244,8 +243,8 @@ public class mainGUI extends JFrame{
                 data_makeSellOrders_items.clear();
                 table_makeSellOrders_items.setModel(new DefaultTableModel(data_makeSellOrders_items, name_makeSellOrders_items));
                 textField_makeSellOrders_total.setText("");
-                new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
-                                            scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
+                new flush(db).flushAllTables(scrollPanel_unchecked, scrollPanel_unpaid, scrollPanel_return, scrollPanel_finish,
+                        scrollPanel_allOrder, scrollPanel_checkStock, scrollPanel_returned);
             }
         });
 
@@ -263,23 +262,23 @@ public class mainGUI extends JFrame{
         //------------------待审核---------------------------------------
         // 待审核总的panel
         JPanel panel_unchecked = new JPanel();
-        tabbedPane_sell.addTab("待审核", null, panel_unchecked, null);
+        tabbedPane_sell.addTab("待审核(unchecked)", null, panel_unchecked, null);
         panel_unchecked.setLayout(new BorderLayout(0, 0));
         // 待审核订单的scrollpanel
-        panel_unchecked.add(scrollPane_unchecked, BorderLayout.CENTER);
+        panel_unchecked.add(scrollPanel_unchecked, BorderLayout.CENTER);
         Vector<Vector<Object>> data_unchecked = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "1", "State");
-        DefaultTableModel model_unchecked = new DefaultTableModel(data_unchecked, name_sell_haveStateChaneg);
+        DefaultTableModel model_unchecked = new DefaultTableModel_noEditable(data_unchecked, name_sell_haveStateChaneg, 5);
         table_unchecked = new JTable();
         table_unchecked.setModel(model_unchecked);
-        scrollPane_unchecked.setViewportView(table_unchecked);
+        scrollPanel_unchecked.setViewportView(table_unchecked);
         TableColumn tcm_unchecked = table_unchecked.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-        boolean_button.boolean_button(table_unchecked,data_unchecked,name_sell_haveStateChaneg.size()-1,model_unchecked,db,tcm_unchecked,"2","1");
+        boolean_button.boolean_button(table_unchecked,data_unchecked,name_sell_haveStateChaneg.size()-1,model_unchecked,db,tcm_unchecked,"2","1",1);
         JButton button_unchecked_check = new JButton("确认");
         button_unchecked_check.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
-                        scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
+                new flush(db).flushAllTables(scrollPanel_unchecked, scrollPanel_unpaid, scrollPanel_return, scrollPanel_finish,
+                        scrollPanel_allOrder, scrollPanel_checkStock, scrollPanel_returned);
             }
         });
         panel_unchecked.add(button_unchecked_check, BorderLayout.SOUTH);
@@ -287,46 +286,46 @@ public class mainGUI extends JFrame{
 
         //------------------待收款---------------------------------------
         JPanel panel_unpaid = new JPanel();
-        tabbedPane_sell.addTab("待收款", null, panel_unpaid, null);
+        tabbedPane_sell.addTab("待收款(unpaid)", null, panel_unpaid, null);
         panel_unpaid.setLayout(new BorderLayout(0, 0));
-        scrollPane_unpaid = new JScrollPane();
-        panel_unpaid.add(scrollPane_unpaid, BorderLayout.CENTER);
+        scrollPanel_unpaid = new JScrollPane();
+        panel_unpaid.add(scrollPanel_unpaid, BorderLayout.CENTER);
         Vector<Vector<Object>> data_unpaid = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "2", "State");
-        DefaultTableModel model_unpaid = new DefaultTableModel(data_unpaid, name_sell_haveStateChaneg);
+        DefaultTableModel model_unpaid =  new DefaultTableModel_noEditable(data_unpaid, name_sell_haveStateChaneg, 5);
         table_unpaid = new JTable();
         table_unpaid.setModel(model_unpaid);
-        scrollPane_unpaid.setViewportView(table_unpaid);
+        scrollPanel_unpaid.setViewportView(table_unpaid);
         TableColumn tcm_unpaid = table_unpaid.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-        boolean_button.boolean_button(table_unpaid,data_unpaid,name_sell_haveStateChaneg.size()-1,model_unpaid,db,tcm_unpaid,"3","2");
+        boolean_button.boolean_button(table_unpaid,data_unpaid,name_sell_haveStateChaneg.size()-1,model_unpaid,db,tcm_unpaid,"3","2",0);
         JButton button_unpaid_check = new JButton("确认");
         button_unpaid_check.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
-                        scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
+                new flush(db).flushAllTables(scrollPanel_unchecked, scrollPanel_unpaid, scrollPanel_return, scrollPanel_finish,
+                        scrollPanel_allOrder, scrollPanel_checkStock, scrollPanel_returned);
             }
         });
         panel_unpaid.add(button_unpaid_check, BorderLayout.SOUTH);
 
         //------------------已完成---------------------------------------
         JPanel panel_finish = new JPanel();
-        tabbedPane_sell.addTab("已完成", null, panel_finish, null);
+        tabbedPane_sell.addTab("已完成(finish)", null, panel_finish, null);
         panel_finish.setLayout(new BorderLayout(0, 0));
-        scrollPane_finish = new JScrollPane();
-        panel_finish.add(scrollPane_finish, BorderLayout.CENTER);
+        scrollPanel_finish = new JScrollPane();
+        panel_finish.add(scrollPanel_finish, BorderLayout.CENTER);
         Vector<Vector<Object>> data_finish = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "3", "State");
-        DefaultTableModel model_finish = new DefaultTableModel(data_finish, name_sell_haveStateChaneg);
+        DefaultTableModel model_finish = new DefaultTableModel_noEditable(data_finish, name_sell_haveStateChaneg, 5);
         table_finish = new JTable();
         table_finish.setModel(model_finish);
-        scrollPane_finish.setViewportView(table_finish);
+        scrollPanel_finish.setViewportView(table_finish);
         TableColumn tcm_finish = table_finish.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-        boolean_button.boolean_button(table_finish,data_finish,name_sell_haveStateChaneg.size()-1,model_finish,db,tcm_finish,"4","3");
+        boolean_button.boolean_button(table_finish,data_finish,name_sell_haveStateChaneg.size()-1,model_finish,db,tcm_finish,"4","3",0);
         JButton button_finish_check = new JButton("确认");
         button_finish_check.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
-                        scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
+                new flush(db).flushAllTables(scrollPanel_unchecked, scrollPanel_unpaid, scrollPanel_return, scrollPanel_finish,
+                        scrollPanel_allOrder, scrollPanel_checkStock, scrollPanel_returned);
             }
         });
         panel_finish.add(button_finish_check, BorderLayout.SOUTH);
@@ -334,24 +333,24 @@ public class mainGUI extends JFrame{
 
         //------------------退货中---------------------------------------4
         JPanel panel_return = new JPanel();
-        tabbedPane_sell.addTab("退货中", null, panel_return, null);
+        tabbedPane_sell.addTab("退货中(return)", null, panel_return, null);
         panel_return.setLayout(new BorderLayout(0, 0));
-        scrollPane_return = new JScrollPane();
-        panel_return.add(scrollPane_return, BorderLayout.CENTER);
+        scrollPanel_return = new JScrollPane();
+        panel_return.add(scrollPanel_return, BorderLayout.CENTER);
         Vector<Vector<Object>> data_return = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "4", "State");
-        DefaultTableModel model_return = new DefaultTableModel(data_return, name_sell_haveStateChaneg);
+        DefaultTableModel model_return = new DefaultTableModel_noEditable(data_return, name_sell_haveStateChaneg, 5);
         table_return = new JTable();
         table_return.setModel(model_return);
-        scrollPane_return.setViewportView(table_return);
+        scrollPanel_return.setViewportView(table_return);
         TableColumn tcm_return = table_return.getColumnModel().getColumn(name_sell_haveStateChaneg.size()-1);
-        boolean_button.boolean_button(table_return,data_return,name_sell_haveStateChaneg.size()-1,model_return,db,tcm_return,"5","4");
+        boolean_button.boolean_button(table_return,data_return,name_sell_haveStateChaneg.size()-1,model_return,db,tcm_return,"5","4",0);
         // 销售->退货->确认按钮->绑定监视器
         JButton button_return_check = new JButton("确认");
         button_return_check.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
-                        scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
+                new flush(db).flushAllTables(scrollPanel_unchecked, scrollPanel_unpaid, scrollPanel_return, scrollPanel_finish,
+                        scrollPanel_allOrder, scrollPanel_checkStock, scrollPanel_returned);
             }
         });
         panel_return.add(button_return_check, BorderLayout.SOUTH);
@@ -361,26 +360,26 @@ public class mainGUI extends JFrame{
 
         //------------------已退货---------------------------------------
         JPanel panel_returned = new JPanel();
-        tabbedPane_sell.addTab("已退货", null, panel_returned, null);
+        tabbedPane_sell.addTab("已退货(returned)", null, panel_returned, null);
         panel_returned.setLayout(new BorderLayout(0, 0));
-        scrollPane_returned = new JScrollPane();
-        panel_returned.add(scrollPane_returned, BorderLayout.CENTER);
+        scrollPanel_returned = new JScrollPane();
+        panel_returned.add(scrollPanel_returned, BorderLayout.CENTER);
         Vector<Vector<Object>> data_returned = returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, "5", "State");
-        DefaultTableModel model_returned = new DefaultTableModel(data_returned, name_sell_noStateChange);
+        DefaultTableModel model_returned = new DefaultTableModel_noEditable(data_returned, name_sell_haveStateChaneg, 5);
         table_returned = new JTable();
         table_returned.setModel(model_returned);
-        scrollPane_returned.setViewportView(table_returned);
+        scrollPanel_returned.setViewportView(table_returned);
 
         //------------------订单列表---------------------------------------
         JPanel panel_allOrder = new JPanel();
-        tabbedPane_sell.addTab("订单列表", null, panel_allOrder, null);
+        tabbedPane_sell.addTab("订单列表(allOrder)", null, panel_allOrder, null);
         panel_allOrder.setLayout(new BorderLayout(0, 0));
-        panel_allOrder.add(scrollPane_allOrder, BorderLayout.CENTER);
+        panel_allOrder.add(scrollPanel_allOrder, BorderLayout.CENTER);
         Vector<Vector<Object>> data_allOrder = returnVector.FromDBReadAll(db,"ordermanager",name_sell_noStateChange);
-        DefaultTableModel model_allOrder = new DefaultTableModel(data_allOrder, name_sell_noStateChange);
+        DefaultTableModel model_allOrder = new DefaultTableModel_noEditable(data_allOrder, name_sell_noStateChange, 8);
         table_allOrder = new JTable();
         table_allOrder.setModel(model_allOrder);
-        scrollPane_allOrder.setViewportView(table_allOrder);
+        scrollPanel_allOrder.setViewportView(table_allOrder);
         Box box_allOrder = Box.createHorizontalBox();
         panel_allOrder.add(box_allOrder, BorderLayout.NORTH);
 
@@ -400,10 +399,10 @@ public class mainGUI extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 DefaultTableModel temp;
                 if (textField_allOrder_inputOrderID.getText().equals("")){
-                    temp = new DefaultTableModel(returnVector.FromDBReadAll(db,"ordermanager",name_sell_noStateChange), name_sell_noStateChange);
+                    temp = new DefaultTableModel_noEditable(returnVector.FromDBReadAll(db,"ordermanager",name_sell_noStateChange), name_sell_noStateChange, 5);
                 }
                 else {
-                    temp = new DefaultTableModel(returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, textField_allOrder_inputOrderID.getText(), "ID"), name_sell_noStateChange);
+                    temp = new DefaultTableModel_noEditable(returnVector.FromDBRead(db, "ordermanager", name_sell_noStateChange, textField_allOrder_inputOrderID.getText(), "ID"), name_sell_noStateChange, 5);
                 }
                 table_allOrder.setModel(temp);
             }
@@ -421,13 +420,12 @@ public class mainGUI extends JFrame{
                 if (flag==0){
                     aboutarea_delete.setText("找不到用户，无法删除！\n");
                 }else{
-                    new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
-                            scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
+                    new flush(db).flushAllTables(scrollPanel_unchecked, scrollPanel_unpaid, scrollPanel_return, scrollPanel_finish,
+                            scrollPanel_allOrder, scrollPanel_checkStock, scrollPanel_returned);
                     aboutarea_delete.setText("删除成功！\n");
                     textField_allOrder_inputOrderID.setText("");
                 }
                 JOptionPane.showConfirmDialog(null,aboutarea_delete,"Error!",JOptionPane.PLAIN_MESSAGE);
-                // TODO 删除了之后。删除成功的弹窗
             }
         });
 
@@ -468,7 +466,7 @@ public class mainGUI extends JFrame{
 
         // ------------------进货------------------------------------
         JPanel panel_inStock = new JPanel();
-        tabbedPane_stock.addTab("进货", null, panel_inStock, null);
+        tabbedPane_stock.addTab("进货(inStock)", null, panel_inStock, null);
         panel_inStock.setLayout(new BorderLayout(0, 0));
         JScrollPane scrollPane_inStock_addProduct = new JScrollPane();
         panel_inStock.add(scrollPane_inStock_addProduct, BorderLayout.CENTER);
@@ -480,7 +478,7 @@ public class mainGUI extends JFrame{
         name_inStock_addProduct.add("数量");
         name_inStock_addProduct.add("总价");
         Vector<Vector<Object>> data_inStock_addProduct = new Vector<Vector<Object>>();
-        DefaultTableModel tablemodel_inStock_addProduct = new DefaultTableModel(data_inStock_addProduct, name_inStock_addProduct);
+        DefaultTableModel tablemodel_inStock_addProduct = new DefaultTableModel_noEditable(data_inStock_addProduct, name_inStock_addProduct, 4);
 
         // 进货列表的table
         table_inStock_addProduct = new JTable();
@@ -504,9 +502,12 @@ public class mainGUI extends JFrame{
                     db.executeQuery("itemmanager(Name,OutPrice,Num,InPrice)",
                             "'"+temp.get(0)+"','"+temp.get(1)+"','" + temp.get(2) +"','"+temp.get(3)+"'");
                 }
-                new flush(db).flushAllTables(scrollPane_unchecked, scrollPane_unpaid, scrollPane_return,  scrollPane_finish,
-                        scrollPane_allOrder,  scrollPane_checkStock, scrollPane_returned);
+                data_inStock_addProduct.clear();
+                DefaultTableModel tablemodel_inStock_addProduct = new DefaultTableModel_noEditable(data_inStock_addProduct, name_inStock_addProduct, 4);
+                table_inStock_addProduct.setModel(tablemodel_inStock_addProduct);
                 textField_inStock_totalProfit.setText("");
+                new flush(db).flushAllTables(scrollPanel_unchecked, scrollPanel_unpaid, scrollPanel_return, scrollPanel_finish,
+                        scrollPanel_allOrder, scrollPanel_checkStock, scrollPanel_returned);
             }
         });
 
@@ -544,14 +545,14 @@ public class mainGUI extends JFrame{
         JPanel panel_checkStock = new JPanel();
         tabbedPane_stock.addTab("清点库存(checkStock)", null, panel_checkStock, null);
         panel_checkStock.setLayout(new BorderLayout(0, 0));
-        scrollPane_checkStock = new JScrollPane();
-        panel_checkStock.add(scrollPane_checkStock, BorderLayout.CENTER);
+        scrollPanel_checkStock = new JScrollPane();
+        panel_checkStock.add(scrollPanel_checkStock, BorderLayout.CENTER);
 
         name_checkStock = new Vector<>(Arrays.asList("id", "name", "num", "inprice"));
         Vector<Vector<Object>> data_checkStock = returnVector.FromDBReadAll(db,"itemmanager",name_checkStock);
-        DefaultTableModel tablemodel_checkStock = new DefaultTableModel(data_checkStock, name_checkStock);
+        DefaultTableModel tablemodel_checkStock = new DefaultTableModel_noEditable(data_checkStock, name_checkStock, 5);
         table_checkStock = new JTable();
         table_checkStock.setModel(tablemodel_checkStock);
-        scrollPane_checkStock.setViewportView(table_checkStock);
+        scrollPanel_checkStock.setViewportView(table_checkStock);
     }
 }
