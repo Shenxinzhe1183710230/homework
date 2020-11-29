@@ -46,7 +46,11 @@ public class mainGUI extends JFrame{
     /**
      * Launch the application.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ClassNotFoundException, UnsupportedLookAndFeelException, InstantiationException, IllegalAccessException {
+
+            JFrame.setDefaultLookAndFeelDecorated(true);
+            UIManager.setLookAndFeel("com.jtattoo.plaf.mcwin.McWinLookAndFeel");
+
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {

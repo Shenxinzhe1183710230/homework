@@ -70,14 +70,15 @@ public class op {
                         String tmp2[] = x1.split(",");
                         tmp = db.executeFind(tmp2[0], "itemmanager", "name");
                         try {
-                            tmp.next();
-                            System.out.println(String.valueOf(tmp.getObject("inprice")));
-                            String inprice = String.valueOf(tmp.getObject("inprice"));
-                            inPriceAll += Float.valueOf(inprice) * Integer.valueOf(tmp2[1]);
-                        } catch (SQLException e) {
-                            // TODO Auto-generated catch block
-                            e.printStackTrace();
+                            if(tmp.next()){
+                                System.out.println(String.valueOf(tmp.getObject("inprice")));
+                                String inprice = String.valueOf(tmp.getObject("inprice"));
+                                inPriceAll += Float.valueOf(inprice) * Integer.valueOf(tmp2[1]);
+                            }
+                        } catch (SQLException throwables) {
+                            throwables.printStackTrace();
                         }
+                        ;
                     }
                 }
                 sum += Float.valueOf(String.valueOf(x.get(3))) - inPriceAll;
